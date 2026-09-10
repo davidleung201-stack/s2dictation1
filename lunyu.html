@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="theme-color" content="#3b2f2f">
+<title>《論語》論仁‧論孝‧論君子 背默練習</title>
+<style>
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{margin:0;background:#f6f1e7;color:#2b2622;font-family:"Noto Serif TC","PingFang TC","Songti TC","PMingLiU",serif;padding-bottom:calc(20px + env(safe-area-inset-bottom))}
+header{position:sticky;top:0;background:#3b2f2f;color:#f6f1e7;padding:10px 12px 10px;padding-top:calc(10px + env(safe-area-inset-top));z-index:5;box-shadow:0 2px 8px rgba(0,0,0,.25)}
+h1{font-size:17px;margin:0 0 8px;text-align:center;letter-spacing:1px}
+.tabs{display:flex;gap:6px;margin-bottom:6px}
+.tab{flex:1;padding:8px 4px;border-radius:8px;background:rgba(255,255,255,.12);text-align:center;font-size:15px;white-space:nowrap;cursor:pointer;user-select:none}
+.tab.on{background:#c8a96e;color:#2b2622;font-weight:bold}
+.modes .tab{font-size:14px}
+main{padding:14px;max-width:720px;margin:0 auto}
+.bar{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:12px}
+.btn{padding:8px 12px;border-radius:8px;border:1px solid #c8a96e;background:#fff;font-size:15px;font-family:inherit;color:#2b2622;cursor:pointer}
+.btn.on{background:#c8a96e;font-weight:bold}
+.btn.dark{background:#3b2f2f;color:#f6f1e7;border-color:#3b2f2f}
+.note{font-size:14px;color:#6f655a;margin:0 0 12px;line-height:1.6}
+.para{font-size:22px;line-height:1.95;letter-spacing:1px;margin:0 0 20px;text-align:justify;background:#fffdf8;padding:12px 14px;border-radius:10px;border:1px solid #eadfcb}
+.src{display:block;font-size:13px;color:#8a7f72;text-align:right;margin-top:4px;letter-spacing:0}
+.blank{display:inline-block;width:1.25em;height:1.3em;line-height:1.3em;border-bottom:2px solid #b08d57;background:#fff3dc;text-align:center;vertical-align:-0.2em;margin:0 1px;border-radius:4px;cursor:pointer}
+.blank.active{outline:2px solid #3b2f2f}
+.blank.ok{background:#dff3e1;border-color:#3a9a5b}
+.blank.late{background:#fde9c8;border-color:#d68b1a}
+.blank.miss{background:#fadada;border-color:#c94a4a;color:#c94a4a}
+.progress{height:8px;background:#e6dcc8;border-radius:4px;overflow:hidden;margin-bottom:8px}
+.progress i{display:block;height:100%;background:#3a9a5b;width:0;transition:width .2s}
+.stat{font-size:14px;color:#6f655a;margin-bottom:12px}
+.result{background:#3b2f2f;color:#f6f1e7;padding:14px;border-radius:10px;text-align:center;font-size:18px;margin-bottom:14px;line-height:1.6}
+.clause{cursor:pointer;border-radius:4px;padding:0 2px}
+.hid{color:transparent;background:#e6dcc8;border-radius:3px;margin:0 1px}
+.clause.open .hid{color:inherit;background:none}
+.clause.open{background:#f3ecdc}
+select,textarea{font-family:inherit;font-size:16px;border:1px solid #c8a96e;border-radius:8px;padding:8px;background:#fff;color:#2b2622}
+select{max-width:100%}
+textarea{width:100%;min-height:150px;font-size:20px;line-height:1.8;letter-spacing:1px;margin:8px 0}
+.hint{font-size:20px;color:#6f655a;margin:6px 0}
+.miss{color:#c94a4a;border-bottom:2px solid #c94a4a;font-weight:bold}
+.extra{color:#c94a4a;text-decoration:line-through;background:#fadada;border-radius:3px}
+.small{font-size:16px;line-height:1.8}
+.backdrop{position:fixed;inset:0;background:rgba(0,0,0,.35);z-index:9;display:none}
+.backdrop.show{display:block}
+.sheet{position:fixed;left:0;right:0;bottom:0;background:#fff;border-radius:16px 16px 0 0;padding:14px 14px calc(16px + env(safe-area-inset-bottom));box-shadow:0 -4px 20px rgba(0,0,0,.2);transform:translateY(105%);transition:transform .2s;z-index:10;max-width:720px;margin:0 auto}
+.sheet.show{transform:none}
+.ctx{font-size:18px;color:#6f655a;text-align:center;margin-bottom:12px;line-height:1.6}
+.ctx b{color:#b08d57;font-size:22px}
+.opts{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.opt{font-size:32px;padding:14px;border-radius:12px;background:#f6f1e7;border:2px solid #e0d6c4;text-align:center;cursor:pointer;user-select:none}
+.opt.bad{background:#fadada;border-color:#c94a4a;opacity:.55;pointer-events:none}
+.opt.good{background:#dff3e1;border-color:#3a9a5b}
+</style>
+</head>
+<body>
+<header>
+  <h1>《論語》論仁‧論孝‧論君子</h1>
+  <div class="tabs" id="chapTabs"></div>
+  <div class="tabs modes" id="modeTabs"></div>
+</header>
+<main id="main"></main>
+<div class="backdrop" id="backdrop"></div>
+<div class="sheet" id="sheet"></div>
+
+<script>
+const PUNCT='，。；：「」？！、（）';
+const isP=c=>PUNCT.includes(c);
+
+const DATA=[
+{title:'論仁',items:[
+ {t:'子曰：「不仁者，不可以久處約，不可以長處樂。仁者安仁，知者利仁。」'},
+ {t:'子曰：「富與貴，是人之所欲也；不以其道得之，不處也。貧與賤，是人之所惡也；不以其道得之，不去也。君子去仁，惡乎成名？君子無終食之間違仁，造次必於是，顛沛必於是。」'},
+ {t:'顏淵問仁。子曰：「克己復禮為仁。一日克己復禮，天下歸仁焉。為仁由己，而由人乎哉？」顏淵曰：「請問其目。」子曰：「非禮勿視，非禮勿聽，非禮勿言，非禮勿動。」顏淵曰：「回雖不敏，請事斯語矣。」'},
+ {t:'子曰：「志士仁人，無求生以害仁，有殺身以成仁。」'}
+]},
+{title:'論孝',items:[
+ {t:'孟懿子問孝。子曰：「無違。」樊遲御，子告之曰：「孟孫問孝於我，我對曰，無違。」樊遲曰：「何謂也？」子曰：「生，事之以禮；死，葬之以禮，祭之以禮。」'},
+ {t:'子游問孝。子曰：「今之孝者，是謂能養。至於犬馬，皆能有養；不敬，何以別乎！」'},
+ {t:'子曰：「事父母幾諫，見志不從，又敬不違，勞而不怨。」'},
+ {t:'子曰：「父母之年，不可不知也。一則以喜，一則以懼。」'}
+]},
+{title:'論君子',items:[
+ {t:'子曰：「君子不重則不威；學則不固。主忠信。無友不如己者。過則勿憚改。」',s:'《學而》第一'},
+ {t:'子曰：「君子坦蕩蕩，小人長戚戚。」',s:'《述而》第七'},
+ {t:'司馬牛問君子。子曰：「君子不憂不懼。」曰：「不憂不懼，斯謂之君子矣乎？」子曰：「內省不疚，夫何憂何懼？」',s:'《顏淵》第十二'},
+ {t:'子曰：「君子成人之美，不成人之惡。小人反是。」',s:'《顏淵》第十二'},
+ {t:'子曰：「君子恥其言而過其行。」',s:'《憲問》第十四'},
+ {t:'子曰：「君子義以為質，禮以行之，孫以出之，信以成之。君子哉！」',s:'《衞靈公》第十五'},
+ {t:'子曰：「君子病無能焉，不病人之不己知也。」',s:'《衞靈公》第十五'},
+ {t:'子曰：「君子求諸己，小人求諸人。」',s:'《衞靈公》第十五'}
+]}
+];
+const MODES=[['read','📖 閱讀'],['hint','👀 提示'],['fill','✏️ 填充'],['dict','📝 默寫']];
+
+let chap=0, mode='read', ratio=0.5, dictIdx=0;
+const $=id=>document.getElementById(id);
+const el=(tag,cls,txt)=>{const e=document.createElement(tag);if(cls)e.className=cls;if(txt!=null)e.textContent=txt;return e;};
+const shuffle=a=>{for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;};
+
+function renderTabs(){
+  const ct=$('chapTabs');ct.innerHTML='';
+  DATA.forEach((d,i)=>{const t=el('div','tab'+(i===chap?' on':''),d.title);t.onclick=()=>{chap=i;dictIdx=0;render();};ct.appendChild(t);});
+  const mt=$('modeTabs');mt.innerHTML='';
+  MODES.forEach(([k,n])=>{const t=el('div','tab'+(k===mode?' on':''),n);t.onclick=()=>{mode=k;render();};mt.appendChild(t);});
+}
+function render(){
+  renderTabs();closeSheet();
+  const m=$('main');m.innerHTML='';
+  ({read:renderRead,hint:renderHint,fill:renderFill,dict:renderDict})[mode](m);
+  window.scrollTo(0,0);
+}
+function srcTag(it){return it.s?el('span','src',it.s):null;}
+
+/* ---------- 閱讀 ---------- */
+function renderRead(m){
+  m.appendChild(el('p','note','先熟讀全文，再轉到「提示」逐句背誦。'));
+  DATA[chap].items.forEach(it=>{const p=el('p','para',it.t);const s=srcTag(it);if(s)p.appendChild(s);m.appendChild(p);});
+}
+
+/* ---------- 提示背誦 ---------- */
+function clauses(text){
+  const out=[];let cur='',saw=false;
+  for(const ch of text){
+    if(isP(ch)){cur+=ch;saw=true;}
+    else{if(saw&&cur){out.push(cur);cur='';saw=false;}cur+=ch;}
+  }
+  if(cur)out.push(cur);return out;
+}
+function renderHint(m){
+  m.appendChild(el('p','note','每句只顯示第一個字，先在心中或口頭背出整句，再點該句核對。'));
+  const bar=el('div','bar');
+  const b1=el('button','btn','全部顯示'),b2=el('button','btn','全部隱藏');
+  b1.onclick=()=>m.querySelectorAll('.clause').forEach(c=>c.classList.add('open'));
+  b2.onclick=()=>m.querySelectorAll('.clause').forEach(c=>c.classList.remove('open'));
+  bar.append(b1,b2);m.appendChild(bar);
+  DATA[chap].items.forEach(it=>{
+    const p=el('p','para');
+    clauses(it.t).forEach(cl=>{
+      const span=el('span','clause');let first=true;
+      for(const ch of cl){
+        if(isP(ch)){span.appendChild(document.createTextNode(ch));}
+        else if(first){span.appendChild(document.createTextNode(ch));first=false;}
+        else{span.appendChild(el('span','hid',ch));}
+      }
+      span.onclick=()=>span.classList.toggle('open');
+      p.appendChild(span);
+    });
+    const s=srcTag(it);if(s)p.appendChild(s);
+    m.appendChild(p);
+  });
+}
+
+/* ---------- 填充 ---------- */
+let F=null;
+function renderFill(m){
+  F={total:0,done:0,wrong:0};
+  const bar=el('div','bar');
+  bar.appendChild(el('span','note','難度：'));
+  [[0.3,'易'],[0.5,'中'],[0.7,'難'],[1,'全默']].forEach(([r,n])=>{
+    const b=el('button','btn'+(r===ratio?' on':''),n);b.onclick=()=>{ratio=r;render();};bar.appendChild(b);
+  });
+  const re=el('button','btn dark','🔀 重新出題');re.onclick=render;bar.appendChild(re);
+  const show=el('button','btn','顯示答案');show.onclick=()=>{m.querySelectorAll('.blank:not(.ok):not(.late):not(.miss)').forEach(s=>{s.textContent=s.dataset.a;s.classList.add('miss');F.done++;});updateStat();};
+  bar.appendChild(show);
+  m.appendChild(bar);
+  const prog=el('div','progress');prog.appendChild(el('i'));m.appendChild(prog);
+  m.appendChild(el('div','stat'));m.appendChild(el('div','resultbox'));
+  m.appendChild(el('p','note','點空格，從四個字中選出正確答案。錯兩次會直接顯示答案。'));
+  DATA[chap].items.forEach(it=>{
+    const p=el('p','para');
+    const chars=[...it.t];
+    const idx=chars.map((c,i)=>isP(c)?-1:i).filter(i=>i>=0);
+    const n=Math.max(1,Math.round(idx.length*ratio));
+    const pick=new Set(shuffle(idx.slice()).slice(0,n));
+    chars.forEach((ch,i)=>{
+      if(pick.has(i)){const s=el('span','blank');s.dataset.a=ch;s.dataset.w=0;s.onclick=()=>openSheet(s,it.t,i);p.appendChild(s);F.total++;}
+      else p.appendChild(document.createTextNode(ch));
+    });
+    const s=srcTag(it);if(s)p.appendChild(s);
+    m.appendChild(p);
+  });
+  updateStat();
+}
+function updateStat(){
+  const m=$('main');
+  m.querySelector('.progress i').style.width=(F.total?F.done/F.total*100:0)+'%';
+  m.querySelector('.stat').textContent=`已完成 ${F.done} / ${F.total}　錯誤 ${F.wrong} 次`;
+  const rb=m.querySelector('.resultbox');rb.innerHTML='';
+  if(F.done>=F.total&&F.total>0){
+    const ok=m.querySelectorAll('.blank.ok').length;
+    const pct=Math.round(ok/F.total*100);
+    const r=el('div','result');
+    r.innerHTML=(pct===100?'🏆 全對！太厲害了！':pct>=80?'👍 很好！':pct>=60?'💪 不錯，再練一次會更好':'📚 再多讀幾遍，加油！')+`<br><span style="font-size:15px">一次答對 ${ok} / ${F.total}（${pct}%）</span>`;
+    rb.appendChild(r);
+  }
+}
+function openSheet(span,text,pos){
+  document.querySelectorAll('.blank.active').forEach(s=>s.classList.remove('active'));
+  span.classList.add('active');
+  const ans=span.dataset.a;
+  const pool=[...new Set([...DATA[chap].items.map(i=>i.t).join('')].filter(c=>!isP(c)&&c!==ans))];
+  const opts=shuffle([ans,...shuffle(pool).slice(0,3)]);
+  // 上下文：取該字所在句
+  const chars=[...text];let a=pos,b=pos;
+  while(a>0&&!isP(chars[a-1]))a--;
+  while(b<chars.length-1&&!isP(chars[b+1]))b++;
+  const ctx=chars.slice(a,pos).join('')+'<b>＿</b>'+chars.slice(pos+1,b+1).join('');
+  const sh=$('sheet');sh.innerHTML='';
+  const c=el('div','ctx');c.innerHTML=ctx;sh.appendChild(c);
+  const grid=el('div','opts');
+  opts.forEach(o=>{
+    const d=el('div','opt',o);
+    d.onclick=()=>{
+      if(o===ans){
+        d.classList.add('good');span.textContent=ans;
+        span.classList.add(+span.dataset.w>0?'late':'ok');span.onclick=null;F.done++;
+        setTimeout(closeSheet,250);
+      }else{
+        d.classList.add('bad');F.wrong++;span.dataset.w=+span.dataset.w+1;
+        if(+span.dataset.w>=2){span.textContent=ans;span.classList.add('miss');span.onclick=null;F.done++;
+          grid.querySelectorAll('.opt').forEach(x=>{if(x.textContent===ans)x.classList.add('good');});
+          setTimeout(closeSheet,600);}
+      }
+      updateStat();
+    };
+    grid.appendChild(d);
+  });
+  sh.appendChild(grid);
+  sh.classList.add('show');$('backdrop').classList.add('show');
+}
+function closeSheet(){$('sheet').classList.remove('show');$('backdrop').classList.remove('show');document.querySelectorAll('.blank.active').forEach(s=>s.classList.remove('active'));}
+$('backdrop').onclick=closeSheet;
+
+/* ---------- 默寫 ---------- */
+function lcs(a,b){
+  const n=a.length,m=b.length;
+  const dp=Array.from({length:n+1},()=>new Uint16Array(m+1));
+  for(let i=n-1;i>=0;i--)for(let j=m-1;j>=0;j--)dp[i][j]=a[i]===b[j]?dp[i+1][j+1]+1:Math.max(dp[i+1][j],dp[i][j+1]);
+  const ma=Array(n).fill(false),mb=Array(m).fill(false);
+  let i=0,j=0;
+  while(i<n&&j<m){if(a[i]===b[j]){ma[i]=mb[j]=true;i++;j++;}else if(dp[i+1][j]>=dp[i][j+1])i++;else j++;}
+  return{ma,mb};
+}
+function renderDict(m){
+  const items=DATA[chap].items;
+  m.appendChild(el('p','note','選一段，看提示默寫全段。標點可省略，不影響評分。'));
+  const bar=el('div','bar');
+  const sel=document.createElement('select');
+  items.forEach((it,i)=>{const o=document.createElement('option');o.value=i;o.textContent=`第${i+1}段　${[...it.t].filter(c=>!isP(c)).slice(0,7).join('')}…`;sel.appendChild(o);});
+  sel.value=dictIdx;sel.onchange=()=>{dictIdx=+sel.value;render();};
+  const rnd=el('button','btn','🎲 隨機');rnd.onclick=()=>{dictIdx=Math.floor(Math.random()*items.length);render();};
+  bar.append(sel,rnd);m.appendChild(bar);
+  const it=items[dictIdx];
+  const cls=clauses(it.t);
+  const h=el('div','hint');h.textContent='提示：'+cls[0]+(cls.length>1?'……':'')+(it.s?'　'+it.s:'');m.appendChild(h);
+  const ta=document.createElement('textarea');ta.placeholder='在此輸入全段……';m.appendChild(ta);
+  const bar2=el('div','bar');
+  const chk=el('button','btn dark','✅ 核對'),clr=el('button','btn','清除'),ans=el('button','btn','顯示原文');
+  bar2.append(chk,clr,ans);m.appendChild(bar2);
+  const out=el('div');m.appendChild(out);
+  clr.onclick=()=>{ta.value='';out.innerHTML='';};
+  ans.onclick=()=>{out.innerHTML='';const p=el('p','para',it.t);out.appendChild(p);};
+  chk.onclick=()=>{
+    const oc=[...it.t].filter(c=>!isP(c));
+    const ic=[...ta.value].filter(c=>!isP(c)&&!/\s/.test(c)&&!'，。；：「」？！、（）,.;:?!"“”\'‘’'.includes(c));
+    const{ma,mb}=lcs(oc,ic);
+    const hit=ma.filter(Boolean).length,pct=Math.round(hit/oc.length*100);
+    out.innerHTML='';
+    const r=el('div','result');
+    r.innerHTML=(pct===100&&ic.length===oc.length?'🏆 全對！':pct>=90?'👍 很接近了，留意紅字':pct>=70?'💪 大致記得，再練一次':'📚 再多讀幾遍，加油！')+`<br><span style="font-size:15px">正確 ${hit} / ${oc.length} 字（${pct}%）${ic.length>hit?`，多寫／寫錯 ${ic.length-hit} 字`:''}</span>`;
+    out.appendChild(r);
+    out.appendChild(el('p','note','原文（紅字＝漏寫或寫錯）：'));
+    const p=el('p','para');let k=0;
+    for(const ch of it.t){if(isP(ch))p.appendChild(document.createTextNode(ch));else{p.appendChild(ma[k]?document.createTextNode(ch):el('span','miss',ch));k++;}}
+    out.appendChild(p);
+    if(ic.length>hit){
+      out.appendChild(el('p','note','你的答案（劃線＝多餘或錯字）：'));
+      const q=el('p','para small');ic.forEach((c,i)=>q.appendChild(mb[i]?document.createTextNode(c):el('span','extra',c)));out.appendChild(q);
+    }
+    out.scrollIntoView({behavior:'smooth'});
+  };
+}
+render();
+</script>
+</body>
+</html>
