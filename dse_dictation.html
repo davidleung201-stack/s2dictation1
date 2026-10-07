@@ -72,6 +72,8 @@
   .tile{width:clamp(46px,11.5vw,58px);height:clamp(46px,11.5vw,58px);border:1.5px solid var(--gold);background:#fff;border-radius:10px;font-size:clamp(1.25rem,5.2vw,1.6rem);box-shadow:0 2px 0 var(--gold);transition:.1s}
   .tile:active{transform:translateY(2px);box-shadow:none;background:#fff3d6}
   .tile.used{visibility:hidden}
+  .tile.cur{background:#ffe9a8;outline:2.5px solid #e0a800}
+  .optlabel{width:100%;text-align:center;font-size:.85rem;color:#7a6a50;padding-bottom:2px}
   .tile.shake{animation:shake .4s}
   @keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
 
@@ -190,7 +192,7 @@ window.addEventListener('error',function(e){
   <section id="cloze" class="panel">
     <div class="row"><label>段落</label><span class="chips" id="clozeParas"></span></div>
     <div class="row"><label>難度</label><span class="chips" id="clozeLevels"></span></div>
-    <p class="hint">💡 點字卡填入空格（自動填入第一個空格；亦可先點某個空格）。點已填的空格可取回字卡。字卡中有「陷阱字」！</p>
+    <p class="hint">💡 點選空格，再從下方 6 個選項中選出正確的字（當中藏有意思相近或形似的「陷阱字」！）。點其他空格可隨時切換作答。</p>
     <div class="title" id="clozeTitle"></div>
     <div class="textbox" id="clozeText"></div>
     <div id="clozeResult"></div>
@@ -706,50 +708,64 @@ function newCloze(){
     box.appendChild(s);
   });
   blankEl(0).classList.add('sel');cz.selected=0;
+  // 為每格產生 6 個選項：1 個正確 + 形近陷阱字 + 隨機干擾字
   const allChars=[...strip(PARAS.join(''))];
-  const dis=Math.max(3,Math.ceil(n*0.25));
-  const tileChars=[...cz.answers];
-  for(let i=0;i<dis;i++) tileChars.push(allChars[Math.floor(Math.random()*allChars.length)]);
-  shuffle(tileChars);
+  cz.options=cz.answers.map(a=>{
+    const opts=new Set([a]);
+    if(SYNO[a]&&SYNO[a]!==a) opts.add(SYNO[a]);        // 意思相近的陷阱字優先
+    if(CONFUSE[a]&&CONFUSE[a]!==a) opts.add(CONFUSE[a]); // 其次形似字
+    let guard=0;
+    while(opts.size<6&&guard++<300){
+      const c=allChars[Math.floor(Math.random()*allChars.length)];
+      opts.add(c);
+    }
+    return shuffle([...opts]);
+  });
+  renderOptions();
+}
+function renderOptions(){
   const pool=document.getElementById('clozePool');pool.innerHTML='';
-  tileChars.forEach((ch,id)=>{
-    const t=document.createElement('button');t.className='tile';t.textContent=ch;t.dataset.id=id;
-    cz.tiles.push(ch);t.onclick=()=>tileClick(t);pool.appendChild(t);
+  if(!cz||cz.selected===null) return;
+  const i=cz.selected;
+  const lab=document.createElement('span');lab.className='optlabel';
+  lab.textContent='第 '+(i+1)+' 格　請選出正確的字：';
+  pool.appendChild(lab);
+  cz.options[i].forEach(ch=>{
+    const t=document.createElement('button');
+    t.className='tile'+(cz.filled[i]===ch?' cur':'');
+    t.textContent=ch;
+    t.onclick=()=>{
+      if(cz.checked) return;
+      cz.filled[i]=ch;blankEl(i).textContent=ch;
+      document.querySelectorAll('#clozeText .blank').forEach(b=>b.classList.remove('sel'));
+      const nxt=cz.filled.indexOf(null);
+      if(nxt!==-1){
+        cz.selected=nxt;
+        const b=blankEl(nxt);b.classList.add('sel');
+        const r=b.getBoundingClientRect(), dock=document.querySelector('#cloze .dock').getBoundingClientRect();
+        if(r.bottom>dock.top-10||r.top<70) b.scrollIntoView({behavior:'smooth',block:'center'});
+      }else{
+        cz.selected=i;blankEl(i).classList.add('sel');
+      }
+      renderOptions();
+    };
+    pool.appendChild(t);
   });
 }
 function blankEl(i){return document.querySelector('#clozeText .blank[data-i="'+i+'"]');}
-function tileEl(id){return document.querySelector('#clozePool .tile[data-id="'+id+'"]');}
 function blankClick(s){
   if(cz.checked) return;
   const i=+s.dataset.i;
-  if(cz.filled[i]!==null){
-    tileEl(cz.filled[i]).classList.remove('used');cz.filled[i]=null;s.textContent='';
-  }
   document.querySelectorAll('#clozeText .blank').forEach(b=>b.classList.remove('sel'));
   s.classList.add('sel');cz.selected=i;
-}
-function tileClick(t){
-  if(cz.checked||t.classList.contains('used')) return;
-  let target=cz.selected;
-  if(target===null||cz.filled[target]!==null) target=cz.filled.indexOf(null);
-  if(target===-1){t.classList.add('shake');setTimeout(()=>t.classList.remove('shake'),400);return;}
-  const id=+t.dataset.id;
-  cz.filled[target]=id;blankEl(target).textContent=cz.tiles[id];t.classList.add('used');
-  document.querySelectorAll('#clozeText .blank').forEach(b=>b.classList.remove('sel'));
-  cz.selected=null;
-  const nxt=cz.filled.indexOf(null);
-  if(nxt!==-1){
-    const b=blankEl(nxt);b.classList.add('sel');cz.selected=nxt;
-    const r=b.getBoundingClientRect(), dock=document.querySelector('#cloze .dock').getBoundingClientRect();
-    if(r.bottom>dock.top-10||r.top<70) b.scrollIntoView({behavior:'smooth',block:'center'});
-  }
+  renderOptions();
 }
 document.getElementById('checkCloze').onclick=()=>{
   if(!cz||cz.checked) return;
   let ok=0;
   cz.answers.forEach((a,i)=>{
     const b=blankEl(i);b.classList.remove('sel');
-    const ch=cz.filled[i]===null?'':cz.tiles[cz.filled[i]];
+    const ch=cz.filled[i]||'';
     if(ch===a){b.classList.add('ok');ok++;}else{b.classList.add('bad');if(!ch)b.textContent='？';}
   });
   cz.checked=true;
@@ -808,6 +824,8 @@ const PLEVELS=[{name:'初級',n:3,show:true},{name:'中級',n:5,show:true},{name
 // 形近／音近「陷阱字」表：原字 → 錯字
 const CONFUSE={形:'刑',屋:'室',仞:'刃',冀:'翼',州:'洲',陽:'揚',懲:'徵',塞:'寨',迂:'迁',聚:'眾',謀:'媒',畢:'筆',險:'儉',豫:'預',漢:'漠',陰:'蔭',雜:'離',許:'詐',妻:'妾',損:'捐',魁:'塊',丘:'邱',焉:'馬',置:'直',渤:'勃',隱:'穩',率:'卒',荷:'何',擔:'膻',叩:'扣',墾:'懇',壤:'攘',箕:'其',畚:'奮',鄰:'憐',孀:'霜',遺:'遣',齔:'齒',跳:'挑',寒:'塞',暑:'署',易:'異',節:'結',反:'返',曲:'由',叟:'搜',惠:'慧',殘:'淺',餘:'除',毛:'手',固:'故',徹:'澈',弱:'溺',存:'在',孫:'遜',窮:'窯',匱:'貴',增:'曾',苦:'若',亡:'忘',操:'躁',懼:'據',已:'己',帝:'常',感:'咸',誠:'城',夸:'誇',娥:'峨',負:'貞',厝:'措',朔:'溯',雍:'壅',隴:'龐',斷:'繼',居:'據',通:'過',達:'逹',投:'拋',諸:'於',助:'肋',止:'至',毀:'譭',生:'升',
 仁:'人',孝:'考',禮:'礼',義:'义',學:'学',養:'养',顏:'颜',淵:'渊',歸:'归',動:'动',憂:'忧',蕩:'荡',省:'醒',恥:'耻',己:'已',魚:'渔',兼:'廉',苟:'狗',辟:'避',簞:'单',嘑:'呼',蹴:'就',屑:'肖',鍾:'鐘',辯:'辨',奉:'俸',瓠:'壶',瓢:'飘',掊:'剖',龜:'龟',鬻:'粥',樽:'尊',蓬:'篷',擁:'拥',狸:'理',狌:'猩',罔:'网',罟:'古',崩:'蹦',殂:'阻',疲:'皮',弊:'敝',陟:'涉',臧:'藏',闕:'缺',寵:'宠',淑:'叔',傾:'顷',頹:'颓',桓:'恒',猥:'畏',枉:'往',驅:'驱',馳:'驰',瀘:'泸',駑:'努',鈍:'钝',咎:'究',賂:'赂',暴:'爆',芥:'介',厭:'厌',彌:'弥',嬴:'赢',讒:'谗',誅:'诛',殆:'怠',謫:'摘',銜:'衔',暉:'辉',霪:'淫',霏:'非',檣:'墙',嘯:'啸',鱗:'鳞',璧:'壁',曠:'旷',傳:'传',惑:'或',諛:'谀',聃:'耽',蟠:'潘',貽:'贻',僇:'戮',慄:'栗',踞:'据',窪:'洼',攢:'攒',遯:'遁',縈:'萦',繚:'缭',顥:'颢',觴:'觞',輮:'揉',槁:'稿',礪:'砺',參:'参',須:'需',彰:'章',輿:'舆',騏:'骐',驥:'骥',鍥:'锲',鏤:'镂',壘:'垒',華:'华',簫:'箫',闌:'阑',珊:'删'};
+// 意思相近「陷阱字」表：原字 → 義近字（填空干擾項優先用）
+const SYNO={仁:'義',義:'仁',孝:'悌',禮:'樂',欲:'願',惡:'憎',貧:'窮',富:'貴',貴:'尊',賤:'卑',處:'居',樂:'喜',安:'寧',知:'智',克:'制',復:'返',歸:'回',視:'看',聽:'聞',言:'語',動:'行',敏:'慧',事:'侍',志:'意',害:'傷',成:'就',養:'奉',敬:'恭',別:'分',諫:'勸',從:'隨',勞:'苦',怨:'恨',喜:'悅',懼:'畏',重:'莊',威:'嚴',固:'堅',忠:'誠',信:'義',友:'朋',過:'錯',憚:'怕',改:'變',憂:'愁',省:'察',疚:'愧',美:'善',恥:'辱',質:'本',行:'為',病:'疾',能:'才',求:'索',兼:'並',舍:'棄',取:'得',得:'獲',苟:'且',患:'禍',賢:'聖',心:'志',喪:'失',羹:'湯',弗:'不',蹴:'踏',屑:'顧',受:'納',奉:'侍',鄉:'向',已:'止',貽:'贈',樹:'植',盛:'裝',堅:'硬',舉:'提',剖:'切',瓢:'勺',容:'納',拙:'笨',買:'購',金:'銀',聚:'集',族:'家',鬻:'賣',難:'災',戰:'鬥',裂:'分',封:'賞',浮:'漂',樗:'椿',規:'矩',矩:'規',塗:'途',顧:'望',眾:'群',去:'離',獨:'單',狸:'貓',伏:'俯',候:'等',跳:'躍',罔:'網',罟:'網',垂:'懸',執:'捉',寢:'眠',卧:'睡',夭:'折',斧:'斤',困:'苦',苦:'愁',創:'立',業:'學',崩:'殂',殂:'亡',疲:'弱',弊:'害',誠:'實',危:'險',秋:'時',懈:'怠',追:'念',遇:'恩',報:'答',宜:'當',光:'耀',遺:'留',德:'恩',弘:'大',氣:'志',妄:'亂',喻:'譬',塞:'堵',俱:'皆',陟:'升',罰:'賞',臧:'善',否:'惡',奸:'邪',犯:'觸',付:'交',論:'議',刑:'罰',昭:'明',平:'公',良:'善',善:'良',慮:'思',純:'正',簡:'選',拔:'擢',悉:'皆',咨:'問',益:'利',性:'品',淑:'善',均:'平',曉:'通',暢:'熟',稱:'讚',督:'率',營:'軍',睦:'和',優:'良',劣:'弱',親:'近',遠:'疏',興:'盛',隆:'盛',傾:'衰',頹:'敗',恨:'憾',貞:'忠',節:'義',計:'算',待:'等',耕:'種',全:'保',命:'生',達:'顯',卑:'微',鄙:'陋',枉:'屈',廬:'舍',許:'允',驅:'馳',馳:'驅',值:'遇',覆:'敗',任:'命',爾:'汝',謹:'慎',慎:'謹',寄:'托',夙:'早',效:'功',傷:'損',明:'智',渡:'過',定:'平',甲:'兵',足:'充',獎:'勵',率:'領',竭:'盡',駑:'鈍',攘:'除',凶:'惡',還:'返',職:'責',斟:'酌',損:'減',討:'伐',賊:'寇',治:'罰',靈:'魂',責:'罰',慢:'怠',彰:'顯',咎:'罪',謀:'圖',諏:'詢',察:'審',納:'受',雅:'正',涕:'淚',零:'落',破:'敗',滅:'絕',兵:'器',賂:'賄',虧:'損',互:'相',援:'助',完:'全',獲:'得',邑:'城',較:'比',祖:'先',斬:'砍',荊:'棘',惜:'愛',予:'給',棄:'拋',芥:'草',割:'讓',境:'界',厭:'足',彌:'愈',繁:'多',侵:'犯',急:'切',判:'決',顛:'覆',薪:'柴',救:'撲',繼:'隨',與:'親',始:'初',略:'策',守:'保',速:'招',嘗:'曾',卻:'退',洎:'及',讒:'毀',誅:'殺',革:'滅',殆:'幾',智:'謀',孤:'單',向:'倘',使:'令',愛:'惜',附:'依',猶:'尚',數:'運',量:'測',奇:'傑',合:'併',食:'吞',勢:'力',劫:'迫',削:'割',趨:'向',故:'舊',謫:'貶',越:'及',和:'暖',具:'俱',修:'築',增:'擴',刻:'鐫',屬:'囑',觀:'看',勝:'景',狀:'貌',銜:'含',吞:'噬',橫:'廣',際:'涯',涯:'際',暉:'光',備:'詳',極:'盡',遷:'貶',客:'人',覽:'觀',情:'感',連:'綿',怒:'吼',號:'嘯',濁:'渾',排:'拍',隱:'藏',潛:'伏',形:'影',檣:'桅',楫:'槳',摧:'折',薄:'迫',冥:'暗',嘯:'吼',啼:'鳴',登:'上',斯:'此',國:'京',懷:'念',譏:'毀',景:'光',瀾:'浪',驚:'起',碧:'青',鷗:'鷺',翔:'飛',集:'棲',鱗:'魚',岸:'洲',芷:'蘭',汀:'洲',皓:'皎',躍:'閃',璧:'玉',答:'和',怡:'悅',寵:'榮',辱:'恥',把:'持',臨:'迎',嗟:'唉',廟:'朝',堂:'廷',進:'仕',退:'隱',微:'無',傳:'授',解:'釋',惑:'疑',孰:'誰',久:'遠',出:'超',愚:'蠢',擇:'選',教:'誨',身:'己',童:'兒',習:'學',讀:'誦',巫:'醫',醫:'巫',工:'匠',若:'似',諛:'媚',齒:'列',乃:'竟',常:'恆',徒:'輩',必:'定',攻:'精',好:'喜',嘉:'讚',僇:'戮',恆:'常',慄:'懼',隙:'暇',幽:'深',披:'撥',壺:'樽',醉:'酣',夢:'寐',覺:'醒',凡:'皆',態:'貌',望:'見',緣:'沿',斫:'砍',焚:'燒',茅:'草',攀:'援',踞:'坐',壤:'土',衽:'席',窪:'凹',垤:'丘',穴:'洞',攢:'聚',蹙:'縮',積:'疊',遯:'遁',縈:'繞',繚:'繞',培:'塿',塿:'培',悠:'遠',觴:'杯',酌:'飲',暮:'晚',凝:'定',勸:'勉',寒:'冷',輮:'揉',槁:'枯',暴:'曝',挺:'直',礪:'磨',博:'廣',參:'驗',臾:'刻',跂:'企',招:'揮',臂:'手',疾:'響',假:'借',輿:'車',利:'快',致:'達',絕:'渡',淵:'潭',蛟:'龍',跬:'步',騏:'驥',驥:'騏',朽:'腐',鏤:'刻',螾:'蚓',埃:'塵',跪:'足',螯:'鉗',蟺:'鱔',躁:'急',淘:'洗',濤:'浪',拍:'打',捲:'掀',豪:'傑',姿:'態',灰:'煙',神:'魂',華:'白',酹:'祭',簫:'笛',魚:'龍',縷:'絲',驀:'忽',闌:'殘',覓:'尋',悽:'慘',慘:'悽',戚:'悲',乍:'驟',盞:'杯',敵:'抵',雁:'鴻',梧:'桐',愁:'憂',暝:'晚',喧:'鬧',浣:'洗',歇:'謝',邀:'請',徘:'徊',徊:'徘',結:'訂',邈:'遠',漢:'河',寇:'盜',盜:'賊',憐:'惜',祠:'廟',聊:'且',吟:'詠'};
 const FUNC_WORDS=['之','而','也','其','於','者','以','不','乃','則','乎','焉','哉','矣','與','為','所'];
 let proofLevel=0, pf=null;
 
