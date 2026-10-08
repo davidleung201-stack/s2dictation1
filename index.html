@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <meta name="theme-color" content="#6b4f2a">
-<title>《愚公移山》背默大挑戰</title>
+<title>中二範文背默大挑戰</title>
 <style>
   :root{
     --ink:#3b2f1e;--red:#8b1a1a;--gold:#b08d57;--paper:#fffaf0;--sand:#f7efdc;
@@ -26,8 +26,9 @@
   header p{opacity:.85;font-size:clamp(.78rem,3.2vw,.95rem);margin-top:3px}
   #fontBtn{position:absolute;right:10px;top:50%;transform:translateY(-50%);width:44px;height:44px;border-radius:50%;border:1.5px solid rgba(255,255,255,.7);background:rgba(255,255,255,.15);color:#fff;font-size:1.1rem;font-weight:bold}
   #fontBtn:active{background:rgba(255,255,255,.35)}
+  #menuBtn{position:absolute;left:10px;top:50%;transform:translateY(-50%);height:44px;padding:0 12px;border-radius:22px;border:1.5px solid rgba(255,255,255,.7);background:rgba(255,255,255,.15);color:#fff;font-size:.9rem;display:none}
+  #menuBtn:active{background:rgba(255,255,255,.35)}
 
-  /* 分頁列 */
   .tabs{position:sticky;top:0;z-index:20;display:flex;background:#e9dcc0;border-bottom:2px solid var(--gold);height:var(--tabh)}
   .tab{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;border:none;background:transparent;color:#5a4426;font-size:clamp(.72rem,3.1vw,.95rem);transition:.15s;border-bottom:3px solid transparent}
   .tab .ic{font-size:1.45em;line-height:1}
@@ -37,11 +38,9 @@
   .panel{display:none;padding:14px 14px calc(14px + env(safe-area-inset-bottom))}
   .panel.active{display:block}
 
-  /* 選項列（可橫向捲動） */
   .row{display:flex;gap:8px;align-items:center;margin-bottom:10px;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none;padding-bottom:2px}
   .row::-webkit-scrollbar{display:none}
   .row label{font-weight:bold;color:#6b4f2a;white-space:nowrap;font-size:.95rem}
-  .row.wrap{flex-wrap:wrap;overflow:visible}
   .chips{display:flex;gap:8px}
   .chip{padding:0 16px;min-height:42px;border:1.5px solid var(--gold);background:#fff;border-radius:22px;font-size:clamp(.9rem,3.6vw,1rem);white-space:nowrap;transition:.15s}
   .chip.on{background:var(--red);color:#fff;border-color:var(--red)}
@@ -54,16 +53,17 @@
   .btn.auto{flex:0 0 auto}
 
   .textbox{background:#fff;border:1.5px solid #d9c7a3;border-radius:12px;padding:14px;font-size:var(--fs);line-height:2.2;letter-spacing:1px;min-height:100px}
+  .verse .textbox{text-align:center}
+  .lnum{color:#b08d57;font-weight:bold;margin-right:4px}
   .hint{font-size:clamp(.82rem,3.3vw,.92rem);color:#7a6a50;margin:6px 0 10px;line-height:1.5}
   .title{font-weight:bold;color:var(--red);margin:6px 0 8px;font-size:clamp(.95rem,3.8vw,1.1rem)}
 
-  /* 讀課文 */
   .clause{border-radius:5px;padding:3px 3px;transition:.2s;cursor:pointer}
   .clause.cover{background:var(--ink);color:var(--ink)}
   .clause:active{opacity:.7}
 
-  /* 填空 */
-  .blank{display:inline-block;min-width:1.5em;height:1.75em;line-height:1.75em;text-align:center;border-bottom:2.5px solid var(--red);margin:0 3px;vertical-align:bottom;color:#1a4d8b;background:#fff8e8;border-radius:4px 4px 0 0;cursor:pointer}
+  .blank{display:inline-block;min-width:1.5em;height:1.75em;line-height:1.75em;text-align:center;border-bottom:2.5px solid var(--red);margin:0 3px;vertical-align:bottom;color:#1a4d8b;background:#fff8e8;border-radius:4px 0 0;cursor:pointer}
+  .blank{border-radius:4px 4px 0 0}
   .blank.sel{background:#ffe9a8;outline:2.5px solid #e0a800}
   .blank.ok{color:#1b7a2f;background:#e4f7e8;border-color:#1b7a2f}
   .blank.bad{color:#c00;background:#fde3e3;border-color:#c00;text-decoration:line-through}
@@ -72,18 +72,21 @@
   .tile{width:clamp(46px,11.5vw,58px);height:clamp(46px,11.5vw,58px);border:1.5px solid var(--gold);background:#fff;border-radius:10px;font-size:clamp(1.25rem,5.2vw,1.6rem);box-shadow:0 2px 0 var(--gold);transition:.1s}
   .tile:active{transform:translateY(2px);box-shadow:none;background:#fff3d6}
   .tile.used{visibility:hidden}
+  .tile.cur{background:#ffe9a8;outline:2.5px solid #e0a800}
+  .optlabel{width:100%;text-align:center;font-size:.85rem;color:#7a6a50;padding-bottom:2px}
   .tile.shake{animation:shake .4s}
   @keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
 
-  /* 排序 */
   .answer{position:sticky;top:calc(var(--tabh) + 6px);z-index:10;max-height:38vh;overflow-y:auto;line-height:2;box-shadow:0 4px 12px rgba(0,0,0,.08)}
   .answer .done{color:#1b7a2f}
   .cpool{display:flex;flex-direction:column;gap:8px;margin-top:12px}
   .ctile{width:100%;min-height:50px;padding:10px 14px;border:1.5px solid var(--gold);background:#fff;border-radius:10px;font-size:var(--fs);line-height:1.6;box-shadow:0 2px 0 var(--gold);text-align:left;transition:.1s}
   .ctile:active{transform:translateY(2px);box-shadow:none;background:#fff3d6}
   .ctile.shake{animation:shake .4s;border-color:#c00;background:#fde3e3}
+  #orderTimerDisp{font-weight:bold;color:var(--red);font-size:1.05rem;margin-left:auto;white-space:nowrap;font-variant-numeric:tabular-nums}
+  #orderTimerDisp.urgent{color:#c00;animation:blink .5s infinite alternate}
+  @keyframes blink{to{opacity:.35}}
 
-  /* 背默 */
   textarea{width:100%;min-height:40vh;font-family:inherit;font-size:max(16px,var(--fs));line-height:1.9;padding:12px;border:1.5px solid #d9c7a3;border-radius:12px;resize:vertical;background:#fff;color:var(--ink)}
   textarea:focus{outline:2px solid var(--gold)}
   .ok{color:#1b7a2f}
@@ -95,18 +98,41 @@
   .big{font-size:1.6em;font-weight:bold;color:var(--red)}
   .legend{display:flex;gap:10px 16px;flex-wrap:wrap;font-size:clamp(.8rem,3.2vw,.9rem);margin-top:10px}
 
-  /* 進度 */
+  /* 🔍 批改模式 */
+  .textbox.proof{line-height:2.4;letter-spacing:0}
+  .pc{display:inline-block;min-width:1.4em;text-align:center;padding:0 1px;border-radius:6px;cursor:pointer;line-height:1.8;transition:.12s}
+  .pc:active{background:#f3e7cf}
+  .pc.mark{background:#ffe9a8;outline:2px solid #e0a800;color:var(--red);font-weight:bold}
+  .pc.hit{background:#e4f7e8;color:#1b7a2f;outline:2px solid #1b7a2f;font-weight:bold}
+  .pc.missed{background:#fde3e3;color:#c00;outline:2px dashed #c00;font-weight:bold}
+  .pc.wrong{background:#fff3d6;color:#d97706;outline:2px solid #d97706;text-decoration:line-through}
+  .elist div{padding:6px 0;border-bottom:1px dashed #e5d9bf;line-height:1.6}
+  .elist div:last-child{border-bottom:none}
+  .tag{display:inline-block;font-size:.8em;padding:1px 8px;border-radius:10px;background:var(--sand);color:#6b4f2a;margin-right:6px;border:1px solid #d9c7a3}
+
   .cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,260px),1fr));gap:12px}
   .card{background:#fff;border:1.5px solid #d9c7a3;border-radius:12px;padding:14px}
   .card h3{color:var(--red);font-size:1.05rem;margin-bottom:8px;border-bottom:1px dashed #d9c7a3;padding-bottom:6px}
   .card div{display:flex;justify-content:space-between;padding:5px 0;font-size:.95rem}
   .stars{color:#e0a800;letter-spacing:1px}
 
+  /* 📚 主選單 */
+  #menuArea{padding:14px 14px calc(14px + env(safe-area-inset-bottom))}
+  .menuGrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,250px),1fr));gap:12px;margin-top:10px}
+  .mcard{background:#fff;border:1.5px solid #d9c7a3;border-radius:12px;padding:14px;text-align:left;cursor:pointer;transition:.15s;position:relative;width:100%}
+  .mcard:active{transform:scale(.97);background:#fff3d6}
+  .mcard .num{display:inline-block;background:var(--red);color:#fff;border-radius:14px;padding:1px 10px;font-size:.78rem;margin-bottom:6px}
+  .mcard h3{color:var(--red);font-size:1.12rem;letter-spacing:1px}
+  .mcard .au{color:#6b4f2a;font-size:.88rem;margin-top:2px}
+  .mcard .q{color:#7a6a50;font-size:.82rem;margin-top:6px;font-style:italic}
+  .mcard .stat{display:flex;justify-content:space-between;margin-top:8px;border-top:1px dashed #d9c7a3;padding-top:6px;font-size:.85rem;color:#6b4f2a}
+  @media(hover:hover){.mcard:hover{background:#fff3d6;border-color:var(--gold)}}
+
   .confetti{position:fixed;top:-30px;font-size:26px;animation:fall 2.6s linear forwards;pointer-events:none;z-index:99}
   @keyframes fall{to{transform:translateY(110vh) rotate(720deg);opacity:0}}
   footer{text-align:center;font-size:.78rem;color:#8a7a60;padding:12px 10px calc(12px + env(safe-area-inset-bottom))}
+  #errBar{display:none;position:fixed;left:0;right:0;bottom:0;background:#c00;color:#fff;padding:10px 14px;font-size:13px;z-index:999;white-space:pre-wrap;font-family:monospace}
 
-  /* 只有滑鼠裝置才顯示 hover 效果 */
   @media(hover:hover){
     .tab:hover{background:#dccba6}
     .chip:hover{background:#f3e7cf}
@@ -114,17 +140,37 @@
     .clause:hover{background:#f3e7cf}
     .clause.cover:hover{background:#5a4426;color:#5a4426}
     .tile:hover,.ctile:hover{background:#fff3d6}
+    .pc:hover{background:#f3e7cf}
   }
 </style>
 </head>
 <body>
+<div id="errBar"></div>
+<script>
+/* 錯誤提示：若有任何 JS 錯誤，會在畫面底部顯示 */
+window.addEventListener('error',function(e){
+  var b=document.getElementById('errBar');
+  if(!b)return;
+  b.style.display='block';
+  b.textContent='⚠️ 程式錯誤：'+(e.message||e.error)+(e.lineno?'（第 '+e.lineno+' 行）':'');
+});
+</script>
+
 <div class="app">
   <header>
-    <h1>《愚公移山》背默大挑戰</h1>
-    <p>《列子‧湯問》　子子孫孫，無窮匱也</p>
+    <button id="menuBtn" title="返回主選單" aria-label="返回主選單">☰ 選單</button>
+    <h1 id="appTitle">中二範文背默大挑戰</h1>
+    <p id="appSub">中二級指定默書範文</p>
     <button id="fontBtn" title="調整字體大小" aria-label="調整字體大小">字</button>
   </header>
 
+  <!-- 📚 主選單 -->
+  <div id="menuArea">
+    <p class="hint">💡 請選擇要背誦的篇章。每篇均設 <b>讀課文、填空、排序、背默（自由背默＋批改模式）</b> 五種練習，成績只儲存在你這部裝置內。</p>
+    <div class="menuGrid" id="menuGrid"></div>
+  </div>
+
+  <div id="gameArea" style="display:none">
   <nav class="tabs">
     <button class="tab active" data-tab="read"><span class="ic">📖</span>讀課文</button>
     <button class="tab" data-tab="cloze"><span class="ic">✏️</span>填空</button>
@@ -149,7 +195,7 @@
   <section id="cloze" class="panel">
     <div class="row"><label>段落</label><span class="chips" id="clozeParas"></span></div>
     <div class="row"><label>難度</label><span class="chips" id="clozeLevels"></span></div>
-    <p class="hint">💡 點字卡填入空格（自動填入第一個空格；亦可先點某個空格）。點已填的空格可取回字卡。字卡中有「陷阱字」！</p>
+    <p class="hint">💡 點選空格，再從下方 6 個選項中選出正確的字（當中藏有意思相近或形似的「陷阱字」！）。點其他空格可隨時切換作答。</p>
     <div class="title" id="clozeTitle"></div>
     <div class="textbox" id="clozeText"></div>
     <div id="clozeResult"></div>
@@ -167,7 +213,9 @@
   <section id="order" class="panel">
     <div class="row"><label>段落</label><span class="chips" id="orderParas"></span>
       <button class="btn sec auto" id="newOrder">🎲 重新打亂</button></div>
-    <p class="hint">💡 句子已被打亂，請按原文次序逐句點選。點錯會記錄一次。</p>
+    <div class="row"><label>計時</label><span class="chips" id="orderTimerChips"></span>
+      <span id="orderTimerDisp"></span></div>
+    <p class="hint">💡 句子已被打亂，請按原文次序逐句點選。點錯會記錄一次。如設計時，點第一句即開始倒數，限時內未完成會自動結算。</p>
     <div class="title" id="orderTitle"></div>
     <div class="textbox answer" id="orderAnswer"><span style="color:#aaa">（按次序點選下方句子…）</span></div>
     <div class="cpool" id="orderPool"></div>
@@ -176,52 +224,255 @@
 
   <!-- 背默 -->
   <section id="recite" class="panel">
+    <div class="row"><label>模式</label><span class="chips" id="reciteModes"></span></div>
     <div class="row"><label>範圍</label><span class="chips" id="reciteParas"></span></div>
-    <div class="row">
-      <button class="btn sec" id="toggleHint">💡 顯示每句首字提示</button>
+
+    <!-- ✍️ 自由背默 -->
+    <div id="freeMode">
+      <div class="row">
+        <button class="btn sec" id="toggleHint">💡 顯示每句首字提示</button>
+      </div>
+      <div class="textbox" id="reciteHint" style="display:none;font-size:calc(var(--fs)*.85);color:#7a6a50;line-height:1.9"></div>
+      <div class="title" id="reciteTitle"></div>
+      <textarea id="reciteInput" autocapitalize="off" autocorrect="off" spellcheck="false" placeholder="請在此背默課文…（標點、空格不計分，可寫可不寫）"></textarea>
+      <div class="row" style="margin-top:10px">
+        <button class="btn" id="submitRecite">📝 提交比對</button>
+        <button class="btn ghost" id="clearRecite">清除</button>
+      </div>
+      <div id="reciteResult"></div>
     </div>
-    <div class="textbox" id="reciteHint" style="display:none;font-size:calc(var(--fs)*.85);color:#7a6a50;line-height:1.9"></div>
-    <div class="title" id="reciteTitle"></div>
-    <textarea id="reciteInput" autocapitalize="off" autocorrect="off" spellcheck="false" placeholder="請在此背默課文…（標點、空格不計分，可寫可不寫）"></textarea>
-    <div class="row" style="margin-top:10px">
-      <button class="btn" id="submitRecite">📝 提交比對</button>
-      <button class="btn ghost" id="clearRecite">清除</button>
+
+    <!-- 🔍 批改模式 -->
+    <div id="proofMode" style="display:none">
+      <div class="row"><label>難度</label><span class="chips" id="proofLevels"></span></div>
+      <p class="hint">💡 下面的課文被人改錯了！請找出<b>錯字、漏字、多字、次序掉亂</b>的地方：點該字作標記（漏字請點漏字位置<b>旁邊的字</b>），再點一下可取消。完成後按「檢查」。</p>
+      <div class="title" id="proofTitle"></div>
+      <p class="hint" id="proofInfo"></p>
+      <div class="textbox proof" id="proofText"></div>
+      <div class="row" style="margin-top:10px">
+        <button class="btn" id="checkProof">✅ 檢查</button>
+        <button class="btn ghost" id="clearProof">清除標記</button>
+        <button class="btn sec" id="newProof">🎲 新題</button>
+      </div>
+      <div id="proofResult"></div>
     </div>
-    <div id="reciteResult"></div>
   </section>
 
   <!-- 進度 -->
   <section id="progress" class="panel">
-    <p class="hint">此頁只記錄各模式的最佳成績，資料只儲存在你這部裝置內，不會上傳。</p>
+    <p class="hint">此頁只記錄本篇各模式的最佳成績，資料只儲存在你這部裝置內，不會上傳。</p>
     <div class="legend"><span>★★★ 90分以上</span><span>★★ 70分以上</span><span>★ 50分以上</span><span>☆ 未達50／未嘗試</span></div>
     <br>
     <div class="cards" id="progressCards"></div>
     <br>
-    <div class="row"><button class="btn ghost" id="resetProgress">重設所有紀錄</button></div>
+    <div class="row"><button class="btn ghost" id="resetProgress">重設本篇紀錄</button></div>
   </section>
+  </div><!-- /gameArea -->
 
-  <footer>《愚公移山》背默練習遊戲　｜　自我評估用，不收集任何個人資料</footer>
+  <footer>中二中文科範文背默練習遊戲　｜　自我評估用，不收集任何個人資料</footer>
 </div>
 
 <script>
-/* ---------- 課文資料 ---------- */
-const PARAS = [
-"太形、王屋二山，方七百里，高萬仞，本在冀州之南，河陽之北。北山 愚公者，年且九十，面山而居。懲山北之塞，出入之迂也，聚室而謀，曰︰「吾與汝畢力平險，指通豫南，達於漢陰，可乎？」雜然相許。",
-"其妻疑之，曰：「以君之力，曾不能損魁父之丘，如太形、王屋何？且焉置土石？」雜曰：「投諸渤海之尾，隱土之北。」遂率子孫，荷擔者三夫，叩石墾壤，以箕畚運於渤海之尾。鄰人京城氏之孀妻有遺男，始齔，跳往助之。寒暑易節，始一反焉。",
-"河曲智叟笑而止之，曰：「甚矣，汝之不惠！以殘年餘力，曾不能毀山之一毛，其如土石何？」北山 愚公長歎曰：「汝心之固，固不可徹，曾不若孀妻、弱子！我雖死，有子存焉；子又生孫，孫又生子；子又有子，子又有孫；子子孫孫，無窮匱也；而山不加增，何苦而不平？」河曲 智叟亡以應。",
-"操蛇之神聞之，懼其不已也，告之於帝。帝感其誠，命夸娥氏二子負二山，一厝朔東，一厝雍南。自是，冀之南，漢之陰，無隴斷焉。"
+const TEXTS = [
+ {
+  "id": "yugong",
+  "title": "《愚公移山》",
+  "author": "《列子‧湯問》",
+  "paras": [
+   "太形、王屋二山，方七百里，高萬仞，本在冀州之南，河陽之北。北山愚公者，年且九十，面山而居。懲山北之塞，出入之迂也，聚室而謀，曰：「吾與汝畢力平險，指通豫南，達於漢陰，可乎？」雜然相許。",
+   "其妻疑之，曰：「以君之力，曾不能損魁父之丘，如太形、王屋何？且焉置土石？」雜曰：「投諸渤海之尾，隱土之北。」遂率子孫，荷擔者三夫，叩石墾壤，以箕畚運於渤海之尾。鄰人京城氏之孀妻有遺男，始齔，跳往助之。寒暑易節，始一反焉。",
+   "河曲智叟笑而止之，曰：「甚矣，汝之不惠！以殘年餘力，曾不能毀山之一毛，其如土石何？」北山愚公長歎曰：「汝心之固，固不可徹，曾不若孀妻、弱子！我雖死，有子存焉；子又生孫，孫又生子；子又有子，子又有孫；子子孫孫，無窮匱也；而山不加增，何苦而不平？」河曲智叟亡以應。",
+   "操蛇之神聞之，懼其不已也，告之於帝。帝感其誠，命夸娥氏二子負二山，一厝朔東，一厝雍南。自是，冀之南，漢之陰，無隴斷焉。"
+  ],
+  "titles": [
+   "第一段　二山與愚公之志",
+   "第二段　妻疑與移山之行",
+   "第三段　智叟之笑與愚公之答",
+   "第四段　帝感其誠"
+  ],
+  "pnames": [
+   "第一段",
+   "第二段",
+   "第三段",
+   "第四段"
+  ],
+  "quote": "子子孫孫，無窮匱也"
+ },
+ {
+  "id": "shishuoxinyu",
+  "title": "《世說新語》（四則）",
+  "author": "劉義慶",
+  "paras": [
+   "荀巨伯遠看友人疾，值胡賊攻郡，友人語巨伯曰：「吾今死矣，子可去！」巨伯曰：「遠來相視，子令吾去；敗義以求生，豈荀巨伯所行邪？」賊既至，謂巨伯曰：「大軍至，一郡盡空，汝何男子，而敢獨止？」巨伯曰：「友人有疾，不忍委之，寧以我身代友人命。」賊相謂曰：「我輩無義之人，而入有義之國！」遂班軍而還，一郡並獲全。",
+   "管寧、華歆共園中鋤菜，見地有片金，管揮鋤與瓦石不異，華捉而擲去之。又嘗同席讀書，有乘軒冕過門者，寧讀如故，歆廢書出看。寧割席分坐曰：「子非吾友也。」",
+   "潘岳妙有姿容，好神情。少時挾彈出洛陽道，婦人遇者，莫不連手共縈之。左太沖絕醜，亦復效岳遊遨，於是羣嫗齊共亂唾之，委頓而返。",
+   "王子猷居山陰，夜大雪，眠覺，開室，命酌酒。四望皎然，因起仿偟，詠左思《招隱詩》。忽憶戴安道，時戴在剡，即便夜乘小船就之。經宿方至，造門不前而返。人問其故，王曰：「吾本乘興而行，興盡而返，何必見戴？」"
+  ],
+  "titles": [
+   "第一則　荀巨伯探友",
+   "第二則　管寧割席",
+   "第三則　潘岳與左太沖",
+   "第四則　雪夜訪戴"
+  ],
+  "pnames": [
+   "第一則",
+   "第二則",
+   "第三則",
+   "第四則"
+  ],
+  "quote": "吾本乘興而行，興盡而返"
+ },
+ {
+  "id": "taohua",
+  "title": "《桃花源記》",
+  "author": "陶淵明",
+  "paras": [
+   "晉太元中，武陵人，捕魚為業。緣溪行，忘路之遠近。忽逢桃花林，夾岸數百步，中無雜樹，芳草鮮美，落英繽紛，漁人甚異之。復前行，欲窮其林。",
+   "林盡水源，便得一山，山有小口，髣髴若有光。便舍船，從口入。初極狹，才通人。復行數十步，豁然開朗，土地平曠，屋舍儼然，有良田、美池、桑、竹之屬，阡陌交通，雞犬相聞。其中往來種作，男女衣着，悉如外人。黃髮、垂髫，並怡然自樂。",
+   "見漁人，乃大驚，問所從來。具答之。便要還家，設酒、殺雞，作食。村中聞有此人，咸來問訊。自云：先世避秦時亂，率妻子邑人來此絕境，不復出焉；遂與外人間隔。問今是何世，乃不知有漢，無論魏、晉。此人一一為具言所聞，皆歎惋。餘人各復延至其家，皆出酒食。停數日，辭去。此中人語云：「不足為外人道也。」",
+   "既出，得其船，便扶向路，處處誌之。及郡下。詣太守，說如此。太守即遣人隨其往，尋向所誌，遂迷，不復得路。",
+   "南陽劉子驥，高尚士也，聞之，欣然規往，未果，尋病終，後遂無問津者。"
+  ],
+  "titles": [
+   "第一段　忽逢桃花林",
+   "第二段　豁然開朗",
+   "第三段　不足為外人道",
+   "第四段　處處誌之",
+   "第五段　無問津者"
+  ],
+  "pnames": [
+   "第一段",
+   "第二段",
+   "第三段",
+   "第四段",
+   "第五段"
+  ],
+  "quote": "芳草鮮美，落英繽紛"
+ },
+ {
+  "id": "guiyuan",
+  "title": "《歸園田居》（其一）",
+  "author": "陶淵明",
+  "paras": [
+   "少無適俗韻，性本愛丘山。\n誤落塵網中，一去三十年。\n羈鳥戀舊林，池魚思故淵。\n開荒南野際，守拙歸園田。\n方宅十餘畝，草屋八九間，\n榆柳蔭後簷，桃李羅堂前。\n曖曖遠人村，依依墟里烟；\n狗吠深巷中，雞鳴桑樹巔。\n戶庭無塵雜，虛室有餘閑。\n久在樊籠裏，復得返自然。"
+  ],
+  "titles": [
+   "全詩　少無適俗韻"
+  ],
+  "pnames": [
+   "全詩"
+  ],
+  "verse": true,
+  "quote": "久在樊籠裏，復得返自然"
+ },
+ {
+  "id": "huxinting",
+  "title": "《湖心亭看雪》",
+  "author": "張岱",
+  "paras": [
+   "崇禎五年十二月，餘住西湖。大雪三日，湖中人鳥聲俱絕。是日更定矣，餘拏一小舟，擁毳衣爐火，獨往湖心亭看雪。霧凇沆碭，天與雲與山與水，上下一白。湖上影子，惟長堤一痕、湖心亭一點、與餘舟一芥、舟中人兩三粒而已。",
+   "到亭上，有兩人鋪氈對坐，一童子燒酒爐正沸。見餘，大喜曰：「湖中焉得更有此人？」拉餘同飲。餘強飲三大白而別。問其姓氏，是金陵人，客此。及下船，舟子喃喃曰：「莫說相公癡，更有癡似相公者！」"
+  ],
+  "titles": [
+   "第一段　湖上看雪",
+   "第二段　亭上遇客"
+  ],
+  "pnames": [
+   "第一段",
+   "第二段"
+  ],
+  "quote": "莫說相公癡，更有癡似相公者"
+ },
+ {
+  "id": "ailian",
+  "title": "《愛蓮說》",
+  "author": "周敦頤",
+  "paras": [
+   "水陸草木之花，可愛者甚蕃，晉陶淵明獨愛菊。自李唐來，世人甚愛牡丹。予獨愛蓮之出淤泥而不染，濯清漣而不妖；中通外直，不蔓不枝；香遠益清，亭亭淨植，可遠觀而不可褻玩焉。",
+   "予謂：菊，花之隱逸者也；牡丹，花之富貴者也；蓮，花之君子者也。噫！菊之愛，陶後鮮有聞；蓮之愛，同予者何人？牡丹之愛，宜乎眾矣！"
+  ],
+  "titles": [
+   "第一段　出淤泥而不染",
+   "第二段　花之君子"
+  ],
+  "pnames": [
+   "第一段",
+   "第二段"
+  ],
+  "quote": "出淤泥而不染，濯清漣而不妖"
+ },
+ {
+  "id": "loushi",
+  "title": "《陋室銘》",
+  "author": "劉禹錫",
+  "paras": [
+   "山不在高，有仙則名，水不在深，有龍則靈。斯是陋室，唯吾德馨。苔痕上階綠，草色入簾青。談笑有鴻儒，往來無白丁。可以調素琴，閱金經。無絲竹之亂耳，無案牘之勞形。南陽諸葛廬，西蜀子雲亭。孔子云：「何陋之有？」"
+  ],
+  "titles": [
+   "全文　斯是陋室"
+  ],
+  "pnames": [
+   "全文"
+  ],
+  "quote": "斯是陋室，惟吾德馨"
+ },
+ {
+  "id": "weixue",
+  "title": "《為學一首示子姪》",
+  "author": "彭端淑",
+  "paras": [
+   "天下事有難易乎？為之，則難者亦易矣；不為，則易者亦難矣。人之為學有難易乎？學之，則難者亦易矣；不學，則易者亦難矣。吾資之昏不逮人也，吾材之庸不逮人也，旦旦而學之，久而不怠焉，迄乎成，而亦不知其昏與庸也。吾資之聰倍人也，吾材之敏倍人也；屏棄而不用，其與昏與庸無以異也。聖人之道，卒於魯也傳之。然則昏庸聰敏之用，豈有常哉？",
+   "蜀之鄙有二僧：其一貧，其一富。貧者語於富者曰：「吾欲之南海，何如？」富者曰：「子何恃而往？」曰：「吾一瓶一缽足矣。」富者曰：「吾數年來欲買舟而下，猶未能也，子何恃而往？」越明年，貧者自南海還，以告富者，富者有慚色。西蜀之去南海，不知幾千里也，僧之富者不能至，而貧者至之。人之立志，顧不如蜀鄙之僧哉？",
+   "是故聰與敏，可恃而不可恃也，自恃其聰與敏而不學者，自敗者也。昏與庸，可限而不可限也；不自限其昏與庸而力學不倦者，自力者也。"
+  ],
+  "titles": [
+   "第一段　難與易",
+   "第二段　蜀鄙二僧",
+   "第三段　自力者"
+  ],
+  "pnames": [
+   "第一段",
+   "第二段",
+   "第三段"
+  ],
+  "quote": "天下事有難易乎？為之，則難者亦易矣"
+ },
+ {
+  "id": "xiguan",
+  "title": "《習慣說》",
+  "author": "劉蓉",
+  "paras": [
+   "蓉少時，讀書養晦堂之西偏一室；俛而讀，仰而思，思而弗得，輒起，繞室以旋。室有窪徑尺，浸淫日廣，每履之，足苦躓焉。既久而遂安之。",
+   "一日，父來室中，顧而笑曰：「一室之不治，何以天下國家為？」命童子取土平之。後蓉履其地，蹴然以驚，如土忽隆起者；俯視地，坦然則既平矣！已而復然，又久而後安之。",
+   "噫！習之中人甚矣哉！足履平地，不與窪適也；及其久而窪者若平，至使久而即乎其故，則反窒焉而不寧，故君子之學貴慎始。"
+  ],
+  "titles": [
+   "第一段　室有窪徑",
+   "第二段　一室之不治",
+   "第三段　習之中人"
+  ],
+  "pnames": [
+   "第一段",
+   "第二段",
+   "第三段"
+  ],
+  "quote": "習之中人甚矣哉"
+ }
 ];
-const TITLES = ["第一段　二山與愚公之志","第二段　妻疑與移山之行","第三段　智叟之笑與愚公之答","第四段　帝感其誠"];
-const PNAMES = ['第一段','第二段','第三段','第四段'];
+
+/* ---------- 目前篇章（由主選單選取） ---------- */
+let cur=null;
+let PARAS=[],TITLES=[],PNAMES=[];
+
 const LEVELS = [{name:"初級",r:0.25},{name:"中級",r:0.45},{name:"高級",r:0.65},{name:"挑戰",r:0.85}];
 
-const PUNCT_RE = /[，。、；：︰？！「」\s]/;
+const PUNCT_RE = /[，。、；：︰？！「」『』《》〈〉（）()\s]/;
 const isPunct = c => PUNCT_RE.test(c);
 const strip = s => [...s].filter(c=>!isPunct(c)).join('');
 const shuffle = a => { for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];} return a; };
 
 function clauses(text){
-  const parts = text.match(/[^，。；：︰？！]+(?:[，。；：︰？！]+」?)?/g) || [];
+  const parts = text.match(/[^，。；：︰？！]+(?:[，。；：︰？！]+[」』]?)?/g) || [];
   const out = [];
   for(let i=0;i<parts.length;i++){
     let p = parts[i];
@@ -232,24 +483,34 @@ function clauses(text){
 }
 const scrollTo_ = el => setTimeout(()=>el&&el.scrollIntoView({behavior:'smooth',block:'center'}),60);
 
+/* ---------- 安全的本機儲存 ---------- */
+const store={
+  get(k){try{return localStorage.getItem(k);}catch(e){return null;}},
+  set(k,v){try{localStorage.setItem(k,v);}catch(e){}},
+  del(k){try{localStorage.removeItem(k);}catch(e){}}
+};
+
 /* ---------- 字體大小 ---------- */
 const SCALES=[1,1.18,1.36];
-let scaleIdx=+(localStorage.getItem('ygys_scale')||0);
+let scaleIdx=+(store.get('s2_beimo_scale')||0);
+if(!(scaleIdx>=0&&scaleIdx<SCALES.length)) scaleIdx=0;
 function applyScale(){document.documentElement.style.setProperty('--scale',SCALES[scaleIdx]);}
-document.getElementById('fontBtn').onclick=()=>{scaleIdx=(scaleIdx+1)%SCALES.length;applyScale();try{localStorage.setItem('ygys_scale',scaleIdx);}catch(e){}};
+document.getElementById('fontBtn').onclick=()=>{scaleIdx=(scaleIdx+1)%SCALES.length;applyScale();store.set('s2_beimo_scale',scaleIdx);};
 applyScale();
 
 /* ---------- 進度儲存（僅本機） ---------- */
 let progress = {};
-try{ progress = JSON.parse(localStorage.getItem('ygys_progress')||'{}'); }catch(e){}
+try{ progress = JSON.parse(store.get('s2_beimo_progress')||'{}')||{}; }catch(e){ progress={}; }
 function saveScore(key,score){
+  key=cur.id+':'+key;
   if(!(key in progress) || score>progress[key]) progress[key]=score;
-  try{ localStorage.setItem('ygys_progress',JSON.stringify(progress)); }catch(e){}
+  store.set('s2_beimo_progress',JSON.stringify(progress));
 }
+function getScore(textId,key){return progress[textId+':'+key];}
 function stars(s){ if(s===undefined) return '☆'; if(s>=90) return '★★★'; if(s>=70) return '★★'; if(s>=50) return '★'; return '☆'; }
 
 function celebrate(){
-  const em=['🎉','⛰️','✨','🌟','🎊','🏔️'];
+  const em=['🎉','📜','✨','🌟','🎊','🏆'];
   for(let i=0;i<24;i++){
     const d=document.createElement('div');d.className='confetti';
     d.textContent=em[Math.floor(Math.random()*em.length)];
@@ -257,6 +518,47 @@ function celebrate(){
     document.body.appendChild(d);setTimeout(()=>d.remove(),3600);
   }
 }
+
+/* ---------- 📚 主選單 ---------- */
+function buildMenu(){
+  const g=document.getElementById('menuGrid');g.innerHTML='';
+  const nums=['第一篇','第二篇','第三篇','第四篇','第五篇','第六篇','第七篇','第八篇','第九篇','第十篇','第十一篇'];
+  TEXTS.forEach((t,i)=>{
+    const chars=strip(t.paras.join('')).length;
+    const best=getScore(t.id,'recite:'+t.paras.length);
+    const b=document.createElement('button');b.className='mcard';
+    b.innerHTML='<span class="num">'+nums[i]+'</span>'+
+      '<h3>'+t.title+'</h3>'+
+      '<div class="au">'+t.author+'</div>'+
+      '<div class="q">「'+t.quote+'」</div>'+
+      '<div class="stat"><span>'+t.paras.length+' 段 ‧ '+chars+' 字</span><span>全文背默 <span class="stars">'+stars(best)+'</span></span></div>';
+    b.onclick=()=>selectText(i);
+    g.appendChild(b);
+  });
+}
+function selectText(i){
+  cur=TEXTS[i];PARAS=cur.paras;TITLES=cur.titles;PNAMES=cur.pnames;
+  document.getElementById('appTitle').textContent=cur.title+'背默大挑戰';
+  document.getElementById('appSub').textContent=cur.author+'　「'+cur.quote+'」';
+  document.getElementById('menuArea').style.display='none';
+  document.getElementById('gameArea').style.display='block';
+  document.getElementById('gameArea').classList.toggle('verse',!!cur.verse);
+  document.getElementById('menuBtn').style.display='block';
+  document.querySelectorAll('.tab').forEach((x,k)=>x.classList.toggle('active',k===0));
+  document.querySelectorAll('.panel').forEach(x=>x.classList.remove('active'));
+  document.getElementById('read').classList.add('active');
+  initGame();
+  window.scrollTo({top:0});
+}
+document.getElementById('menuBtn').onclick=()=>{
+  document.getElementById('appTitle').textContent='中二範文背默大挑戰';
+  document.getElementById('appSub').textContent='中二級指定默書範文';
+  document.getElementById('menuArea').style.display='block';
+  document.getElementById('gameArea').style.display='none';
+  document.getElementById('menuBtn').style.display='none';
+  buildMenu();
+  window.scrollTo({top:0});
+};
 
 /* ---------- 分頁切換 ---------- */
 document.querySelectorAll('.tab').forEach(t=>t.addEventListener('click',()=>{
@@ -282,20 +584,35 @@ let readIdx=0;
 function renderRead(){
   document.getElementById('readTitle').textContent=TITLES[readIdx];
   const box=document.getElementById('readText');box.innerHTML='';
+  if(cur.numbered){
+    // 逐章句顯示，並在每則前加序號（序號不參與遮蓋）
+    let ln=0;
+    PARAS[readIdx].split('\n').forEach((line,li)=>{
+      if(li>0) box.appendChild(document.createElement('br'));
+      if(!line) return;
+      ln++;
+      const n=document.createElement('span');n.className='lnum';n.textContent=ln+'.';box.appendChild(n);
+      clauses(line).forEach(c=>{
+        const s=document.createElement('span');s.className='clause';s.textContent=c;
+        s.onclick=()=>s.classList.toggle('cover');box.appendChild(s);
+      });
+    });
+    return;
+  }
   clauses(PARAS[readIdx]).forEach(c=>{
-    const s=document.createElement('span');s.className='clause';s.textContent=c;
-    s.onclick=()=>s.classList.toggle('cover');box.appendChild(s);
+    c.split('\n').forEach((part,pi)=>{
+      if(pi>0) box.appendChild(document.createElement('br'));
+      if(!part) return;
+      const s=document.createElement('span');s.className='clause';s.textContent=part;
+      s.onclick=()=>s.classList.toggle('cover');box.appendChild(s);
+    });
   });
 }
-makeChips(document.getElementById('readParas'),PNAMES,i=>{readIdx=i;renderRead();});
 document.getElementById('coverAll').onclick=()=>document.querySelectorAll('#readText .clause').forEach(s=>s.classList.add('cover'));
 document.getElementById('showAll').onclick=()=>document.querySelectorAll('#readText .clause').forEach(s=>s.classList.remove('cover'));
-renderRead();
 
 /* ========== ✏️ 填空挑戰 ========== */
 let clozeIdx=0, clozeLevel=0, cz=null;
-makeChips(document.getElementById('clozeParas'),PNAMES,i=>{clozeIdx=i;newCloze();});
-makeChips(document.getElementById('clozeLevels'),LEVELS.map(l=>l.name),i=>{clozeLevel=i;newCloze();});
 document.getElementById('newCloze').onclick=()=>{newCloze();window.scrollTo({top:0,behavior:'smooth'});};
 
 function newCloze(){
@@ -308,8 +625,12 @@ function newCloze(){
   const box=document.getElementById('clozeText');box.innerHTML='';
   document.getElementById('clozeTitle').textContent=TITLES[clozeIdx]+'　（'+LEVELS[clozeLevel].name+'：'+n+' 格）';
   document.getElementById('clozeResult').innerHTML='';
-  let k=0;
+  let k=0, lno=0;
   chars.forEach((c,i)=>{
+    if(c==='\n'){box.appendChild(document.createElement('br'));return;}
+    if(cur.numbered&&(i===0||chars[i-1]==='\n')){
+      const nm=document.createElement('span');nm.className='lnum';nm.textContent=(++lno)+'.';box.appendChild(nm);
+    }
     const s=document.createElement('span');
     if(blankSet.has(i)){
       s.className='blank';s.dataset.i=k;cz.answers.push(c);cz.filled.push(null);
@@ -318,51 +639,64 @@ function newCloze(){
     box.appendChild(s);
   });
   blankEl(0).classList.add('sel');cz.selected=0;
+  // 為每格產生 6 個選項：1 個正確 + 形近陷阱字 + 隨機干擾字
   const allChars=[...strip(PARAS.join(''))];
-  const dis=Math.max(3,Math.ceil(n*0.25));
-  const tileChars=[...cz.answers];
-  for(let i=0;i<dis;i++) tileChars.push(allChars[Math.floor(Math.random()*allChars.length)]);
-  shuffle(tileChars);
+  cz.options=cz.answers.map(a=>{
+    const opts=new Set([a]);
+    if(SYNO[a]&&SYNO[a]!==a) opts.add(SYNO[a]);        // 意思相近的陷阱字優先
+    if(CONFUSE[a]&&CONFUSE[a]!==a) opts.add(CONFUSE[a]); // 其次形似字
+    let guard=0;
+    while(opts.size<6&&guard++<300){
+      const c=allChars[Math.floor(Math.random()*allChars.length)];
+      opts.add(c);
+    }
+    return shuffle([...opts]);
+  });
+  renderOptions();
+}
+function renderOptions(){
   const pool=document.getElementById('clozePool');pool.innerHTML='';
-  tileChars.forEach((ch,id)=>{
-    const t=document.createElement('button');t.className='tile';t.textContent=ch;t.dataset.id=id;
-    cz.tiles.push(ch);t.onclick=()=>tileClick(t);pool.appendChild(t);
+  if(!cz||cz.selected===null) return;
+  const i=cz.selected;
+  const lab=document.createElement('span');lab.className='optlabel';
+  lab.textContent='第 '+(i+1)+' 格　請選出正確的字：';
+  pool.appendChild(lab);
+  cz.options[i].forEach(ch=>{
+    const t=document.createElement('button');
+    t.className='tile'+(cz.filled[i]===ch?' cur':'');
+    t.textContent=ch;
+    t.onclick=()=>{
+      if(cz.checked) return;
+      cz.filled[i]=ch;blankEl(i).textContent=ch;
+      document.querySelectorAll('#clozeText .blank').forEach(b=>b.classList.remove('sel'));
+      const nxt=cz.filled.indexOf(null);
+      if(nxt!==-1){
+        cz.selected=nxt;
+        const b=blankEl(nxt);b.classList.add('sel');
+        const r=b.getBoundingClientRect(), dock=document.querySelector('#cloze .dock').getBoundingClientRect();
+        if(r.bottom>dock.top-10||r.top<70) b.scrollIntoView({behavior:'smooth',block:'center'});
+      }else{
+        cz.selected=i;blankEl(i).classList.add('sel');
+      }
+      renderOptions();
+    };
+    pool.appendChild(t);
   });
 }
 function blankEl(i){return document.querySelector('#clozeText .blank[data-i="'+i+'"]');}
-function tileEl(id){return document.querySelector('#clozePool .tile[data-id="'+id+'"]');}
 function blankClick(s){
   if(cz.checked) return;
   const i=+s.dataset.i;
-  if(cz.filled[i]!==null){
-    tileEl(cz.filled[i]).classList.remove('used');cz.filled[i]=null;s.textContent='';
-  }
   document.querySelectorAll('#clozeText .blank').forEach(b=>b.classList.remove('sel'));
   s.classList.add('sel');cz.selected=i;
-}
-function tileClick(t){
-  if(cz.checked||t.classList.contains('used')) return;
-  let target=cz.selected;
-  if(target===null||cz.filled[target]!==null) target=cz.filled.indexOf(null);
-  if(target===-1){t.classList.add('shake');setTimeout(()=>t.classList.remove('shake'),400);return;}
-  const id=+t.dataset.id;
-  cz.filled[target]=id;blankEl(target).textContent=cz.tiles[id];t.classList.add('used');
-  document.querySelectorAll('#clozeText .blank').forEach(b=>b.classList.remove('sel'));
-  cz.selected=null;
-  const nxt=cz.filled.indexOf(null);
-  if(nxt!==-1){
-    const b=blankEl(nxt);b.classList.add('sel');cz.selected=nxt;
-    // 若下一個空格被底部字卡區遮住，稍微捲動
-    const r=b.getBoundingClientRect(), dock=document.querySelector('#cloze .dock').getBoundingClientRect();
-    if(r.bottom>dock.top-10||r.top<70) b.scrollIntoView({behavior:'smooth',block:'center'});
-  }
+  renderOptions();
 }
 document.getElementById('checkCloze').onclick=()=>{
   if(!cz||cz.checked) return;
   let ok=0;
   cz.answers.forEach((a,i)=>{
     const b=blankEl(i);b.classList.remove('sel');
-    const ch=cz.filled[i]===null?'':cz.tiles[cz.filled[i]];
+    const ch=cz.filled[i]||'';
     if(ch===a){b.classList.add('ok');ok++;}else{b.classList.add('bad');if(!ch)b.textContent='？';}
   });
   cz.checked=true;
@@ -370,7 +704,7 @@ document.getElementById('checkCloze').onclick=()=>{
   saveScore('cloze:'+clozeIdx+':'+clozeLevel,pct);
   const r=document.getElementById('clozeResult');
   r.innerHTML='<div class="result'+(pct===100?' great':'')+'"><span class="big">'+pct+' 分</span>　'+stars(pct)+'<br>答對 '+ok+' / '+cz.answers.length+' 格。'+
-    (pct===100?'太厲害了！「而山不加增，何苦而不平？」':pct>=70?'不錯！按「顯示答案」看看錯在哪裏，再試更高難度。':'再多讀幾遍課文，然後再挑戰一次吧！')+'</div>';
+    (pct===100?'太厲害了！全對！':pct>=70?'不錯！按「顯示答案」看看錯在哪裏，再試更高難度。':'再多讀幾遍課文，然後再挑戰一次吧！')+'</div>';
   scrollTo_(r);
   if(pct===100) celebrate();
 };
@@ -380,26 +714,57 @@ document.getElementById('revealCloze').onclick=()=>{
   cz.answers.forEach((a,i)=>{const b=blankEl(i);b.classList.remove('sel');if(!b.classList.contains('ok')){b.textContent=a;b.classList.remove('bad');b.classList.add('ok');b.style.textDecoration='none';}});
   window.scrollTo({top:0,behavior:'smooth'});
 };
-newCloze();
 
 /* ========== 🔀 句子排序 ========== */
 let orderIdx=0, od=null;
-makeChips(document.getElementById('orderParas'),PNAMES,i=>{orderIdx=i;newOrder();});
+const TIMER_OPTS=[{name:'關閉',s:0},{name:'1 分鐘',s:60},{name:'2 分鐘',s:120},{name:'3 分鐘',s:180}];
+let orderTimerIdx=0, tm={id:null,left:0,started:false};
 document.getElementById('newOrder').onclick=newOrder;
+function stopTimer(){if(tm.id){clearInterval(tm.id);tm.id=null;}}
+function updateTimerDisp(){
+  const d=document.getElementById('orderTimerDisp');
+  if(TIMER_OPTS[orderTimerIdx].s===0){d.textContent='';return;}
+  const m=Math.floor(tm.left/60),s=tm.left%60;
+  d.textContent='⏱ '+(m>0?m+'分':'')+s+'秒';
+  d.classList.toggle('urgent',tm.started&&tm.left<=10);
+}
+function startTimer(){
+  if(tm.started||TIMER_OPTS[orderTimerIdx].s===0) return;
+  tm.started=true;
+  tm.id=setInterval(()=>{
+    tm.left--;updateTimerDisp();
+    if(tm.left<=0){stopTimer();timeoutOrder();}
+  },1000);
+}
+function timeoutOrder(){
+  od.done=true;
+  const n=od.cl.length;
+  const pct=Math.max(0,Math.round((od.next-od.errors)/n*100));
+  saveScore('order:'+orderIdx,pct);
+  document.querySelectorAll('#orderPool .ctile').forEach(t=>t.disabled=true);
+  const r=document.getElementById('orderResult');
+  r.innerHTML='<div class="result"><span class="big">⏰ 時間到！</span>　'+stars(pct)+'<br>完成 '+od.next+' / '+n+' 句，點錯 '+od.errors+' 次，得分 <b>'+pct+' 分</b>。按「🎲 重新打亂」再挑戰！</div>';
+  scrollTo_(r);
+}
 function newOrder(){
+  stopTimer();
+  tm={id:null,left:TIMER_OPTS[orderTimerIdx].s,started:false};
+  updateTimerDisp();
   const cl=clauses(PARAS[orderIdx]);
-  od={cl,next:0,errors:0};
+  od={cl,next:0,errors:0,done:false};
   document.getElementById('orderTitle').textContent=TITLES[orderIdx]+'　（共 '+cl.length+' 句）';
   const ans=document.getElementById('orderAnswer');
   ans.innerHTML='<span style="color:#aaa">（按次序點選下方句子…）</span>';
   document.getElementById('orderResult').innerHTML='';
   const pool=document.getElementById('orderPool');pool.innerHTML='';
   shuffle(cl.map((c,i)=>i)).forEach(i=>{
-    const t=document.createElement('button');t.className='ctile';t.textContent=cl[i];
+    const t=document.createElement('button');t.className='ctile';t.textContent=cl[i].replace(/\n+/g,'　');
     t.onclick=()=>{
+      if(od.done) return;
+      startTimer();
       if(i===od.next){
         if(od.next===0) ans.innerHTML='';
-        const s=document.createElement('span');s.className='done';s.textContent=cl[i];
+        const s=document.createElement('span');s.className='done';s.textContent=cl[i].replace(/\n+/g,'　');
         ans.appendChild(s);ans.scrollTop=ans.scrollHeight;t.remove();od.next++;
         if(od.next===cl.length) finishOrder();
       }else{od.errors++;t.classList.add('shake');setTimeout(()=>t.classList.remove('shake'),400);}
@@ -408,26 +773,39 @@ function newOrder(){
   });
 }
 function finishOrder(){
+  stopTimer();od.done=true;
   const n=od.cl.length;const pct=Math.max(0,Math.round(100-od.errors/n*100));
   saveScore('order:'+orderIdx,pct);
+  const timeNote=TIMER_OPTS[orderTimerIdx].s>0?'　⏱ 用時 '+(TIMER_OPTS[orderTimerIdx].s-tm.left)+' 秒':'';
   const r=document.getElementById('orderResult');
-  r.innerHTML='<div class="result'+(pct>=90?' great':'')+'"><span class="big">'+pct+' 分</span>　'+stars(pct)+'<br>完成排序！點錯 '+od.errors+' 次。'+(od.errors===0?'一次都沒錯，句序已經牢記在心！':'記住上下文的關係，再試一次會更好。')+'</div>';
+  r.innerHTML='<div class="result'+(pct>=90?' great':'')+'"><span class="big">'+pct+' 分</span>　'+stars(pct)+timeNote+'<br>完成排序！點錯 '+od.errors+' 次。'+(od.errors===0?'一次都沒錯，句序已經牢記在心！':'記住上下文的關係，再試一次會更好。')+'</div>';
   scrollTo_(r);
   if(od.errors===0) celebrate();
 }
-newOrder();
 
-/* ========== 📝 全文背默 ========== */
-let reciteIdx=0, hintOn=false;
-makeChips(document.getElementById('reciteParas'),[...PNAMES,'全文'],i=>{reciteIdx=i;renderReciteHead();});
-function reciteText(){return reciteIdx===4?PARAS.join(''):PARAS[reciteIdx];}
+/* ========== 📝 背默 ========== */
+let reciteIdx=0, hintOn=false, reciteMode='free';
+
+const PLEVELS=[{name:'初級',n:3,show:true},{name:'中級',n:5,show:true},{name:'高級',n:8,show:true},{name:'挑戰',n:12,show:false}];
+// 形近／音近「陷阱字」表：原字 → 錯字
+const CONFUSE={形:'刑',屋:'室',仞:'刃',冀:'翼',州:'洲',陽:'揚',懲:'徵',塞:'寨',迂:'迁',聚:'眾',謀:'媒',畢:'筆',險:'儉',豫:'預',漢:'漠',陰:'蔭',雜:'離',許:'詐',妻:'妾',損:'捐',魁:'塊',丘:'邱',焉:'馬',置:'直',渤:'勃',隱:'穩',率:'卒',荷:'何',擔:'膻',叩:'扣',墾:'懇',壤:'攘',箕:'其',畚:'奮',鄰:'憐',孀:'霜',遺:'遣',齔:'齒',跳:'挑',寒:'塞',暑:'署',易:'異',節:'結',反:'返',曲:'由',叟:'搜',惠:'慧',殘:'淺',餘:'除',毛:'手',固:'故',徹:'澈',弱:'溺',存:'在',孫:'遜',窮:'窯',匱:'貴',增:'曾',苦:'若',亡:'忘',操:'躁',懼:'據',已:'己',帝:'常',感:'咸',誠:'城',夸:'誇',娥:'峨',負:'貞',厝:'措',朔:'溯',雍:'壅',隴:'龐',斷:'繼',居:'據',通:'過',達:'逹',投:'拋',諸:'於',助:'肋',止:'至',毀:'譭',生:'升',
+仁:'人',孝:'考',禮:'礼',義:'义',學:'学',養:'养',顏:'颜',淵:'渊',歸:'归',動:'动',憂:'忧',蕩:'荡',省:'醒',恥:'耻',己:'已',魚:'渔',兼:'廉',苟:'狗',辟:'避',簞:'单',嘑:'呼',蹴:'就',屑:'肖',鍾:'鐘',辯:'辨',奉:'俸',瓠:'壶',瓢:'飘',掊:'剖',龜:'龟',鬻:'粥',樽:'尊',蓬:'篷',擁:'拥',狸:'理',狌:'猩',罔:'网',罟:'古',崩:'蹦',殂:'阻',疲:'皮',弊:'敝',陟:'涉',臧:'藏',闕:'缺',寵:'宠',淑:'叔',傾:'顷',頹:'颓',桓:'恒',猥:'畏',枉:'往',驅:'驱',馳:'驰',瀘:'泸',駑:'努',鈍:'钝',咎:'究',賂:'赂',暴:'爆',芥:'介',厭:'厌',彌:'弥',嬴:'赢',讒:'谗',誅:'诛',殆:'怠',謫:'摘',銜:'衔',暉:'辉',霪:'淫',霏:'非',檣:'墙',嘯:'啸',鱗:'鳞',璧:'壁',曠:'旷',傳:'传',惑:'或',諛:'谀',聃:'耽',蟠:'潘',貽:'贻',僇:'戮',慄:'栗',踞:'据',窪:'洼',攢:'攒',遯:'遁',縈:'萦',繚:'缭',顥:'颢',觴:'觞',輮:'揉',槁:'稿',礪:'砺',參:'参',須:'需',彰:'章',輿:'舆',騏:'骐',驥:'骥',鍥:'锲',鏤:'镂',壘:'垒',華:'华',簫:'箫',闌:'阑',珊:'删'};
+// 意思相近「陷阱字」表：原字 → 義近字（填空干擾項優先用）
+const SYNO={仁:'義',義:'仁',孝:'悌',禮:'樂',欲:'願',惡:'憎',貧:'窮',富:'貴',貴:'尊',賤:'卑',處:'居',樂:'喜',安:'寧',知:'智',克:'制',復:'返',歸:'回',視:'看',聽:'聞',言:'語',動:'行',敏:'慧',事:'侍',志:'意',害:'傷',成:'就',養:'奉',敬:'恭',別:'分',諫:'勸',從:'隨',勞:'苦',怨:'恨',喜:'悅',懼:'畏',重:'莊',威:'嚴',固:'堅',忠:'誠',信:'義',友:'朋',過:'錯',憚:'怕',改:'變',憂:'愁',省:'察',疚:'愧',美:'善',恥:'辱',質:'本',行:'為',病:'疾',能:'才',求:'索',兼:'並',舍:'棄',取:'得',得:'獲',苟:'且',患:'禍',賢:'聖',心:'志',喪:'失',羹:'湯',弗:'不',蹴:'踏',屑:'顧',受:'納',奉:'侍',鄉:'向',已:'止',貽:'贈',樹:'植',盛:'裝',堅:'硬',舉:'提',剖:'切',瓢:'勺',容:'納',拙:'笨',買:'購',金:'銀',聚:'集',族:'家',鬻:'賣',難:'災',戰:'鬥',裂:'分',封:'賞',浮:'漂',樗:'椿',規:'矩',矩:'規',塗:'途',顧:'望',眾:'群',去:'離',獨:'單',狸:'貓',伏:'俯',候:'等',跳:'躍',罔:'網',罟:'網',垂:'懸',執:'捉',寢:'眠',卧:'睡',夭:'折',斧:'斤',困:'苦',苦:'愁',創:'立',業:'學',崩:'殂',殂:'亡',疲:'弱',弊:'害',誠:'實',危:'險',秋:'時',懈:'怠',追:'念',遇:'恩',報:'答',宜:'當',光:'耀',遺:'留',德:'恩',弘:'大',氣:'志',妄:'亂',喻:'譬',塞:'堵',俱:'皆',陟:'升',罰:'賞',臧:'善',否:'惡',奸:'邪',犯:'觸',付:'交',論:'議',刑:'罰',昭:'明',平:'公',良:'善',善:'良',慮:'思',純:'正',簡:'選',拔:'擢',悉:'皆',咨:'問',益:'利',性:'品',淑:'善',均:'平',曉:'通',暢:'熟',稱:'讚',督:'率',營:'軍',睦:'和',優:'良',劣:'弱',親:'近',遠:'疏',興:'盛',隆:'盛',傾:'衰',頹:'敗',恨:'憾',貞:'忠',節:'義',計:'算',待:'等',耕:'種',全:'保',命:'生',達:'顯',卑:'微',鄙:'陋',枉:'屈',廬:'舍',許:'允',驅:'馳',馳:'驅',值:'遇',覆:'敗',任:'命',爾:'汝',謹:'慎',慎:'謹',寄:'托',夙:'早',效:'功',傷:'損',明:'智',渡:'過',定:'平',甲:'兵',足:'充',獎:'勵',率:'領',竭:'盡',駑:'鈍',攘:'除',凶:'惡',還:'返',職:'責',斟:'酌',損:'減',討:'伐',賊:'寇',治:'罰',靈:'魂',責:'罰',慢:'怠',彰:'顯',咎:'罪',謀:'圖',諏:'詢',察:'審',納:'受',雅:'正',涕:'淚',零:'落',破:'敗',滅:'絕',兵:'器',賂:'賄',虧:'損',互:'相',援:'助',完:'全',獲:'得',邑:'城',較:'比',祖:'先',斬:'砍',荊:'棘',惜:'愛',予:'給',棄:'拋',芥:'草',割:'讓',境:'界',厭:'足',彌:'愈',繁:'多',侵:'犯',急:'切',判:'決',顛:'覆',薪:'柴',救:'撲',繼:'隨',與:'親',始:'初',略:'策',守:'保',速:'招',嘗:'曾',卻:'退',洎:'及',讒:'毀',誅:'殺',革:'滅',殆:'幾',智:'謀',孤:'單',向:'倘',使:'令',愛:'惜',附:'依',猶:'尚',數:'運',量:'測',奇:'傑',合:'併',食:'吞',勢:'力',劫:'迫',削:'割',趨:'向',故:'舊',謫:'貶',越:'及',和:'暖',具:'俱',修:'築',增:'擴',刻:'鐫',屬:'囑',觀:'看',勝:'景',狀:'貌',銜:'含',吞:'噬',橫:'廣',際:'涯',涯:'際',暉:'光',備:'詳',極:'盡',遷:'貶',客:'人',覽:'觀',情:'感',連:'綿',怒:'吼',號:'嘯',濁:'渾',排:'拍',隱:'藏',潛:'伏',形:'影',檣:'桅',楫:'槳',摧:'折',薄:'迫',冥:'暗',嘯:'吼',啼:'鳴',登:'上',斯:'此',國:'京',懷:'念',譏:'毀',景:'光',瀾:'浪',驚:'起',碧:'青',鷗:'鷺',翔:'飛',集:'棲',鱗:'魚',岸:'洲',芷:'蘭',汀:'洲',皓:'皎',躍:'閃',璧:'玉',答:'和',怡:'悅',寵:'榮',辱:'恥',把:'持',臨:'迎',嗟:'唉',廟:'朝',堂:'廷',進:'仕',退:'隱',微:'無',傳:'授',解:'釋',惑:'疑',孰:'誰',久:'遠',出:'超',愚:'蠢',擇:'選',教:'誨',身:'己',童:'兒',習:'學',讀:'誦',巫:'醫',醫:'巫',工:'匠',若:'似',諛:'媚',齒:'列',乃:'竟',常:'恆',徒:'輩',必:'定',攻:'精',好:'喜',嘉:'讚',僇:'戮',恆:'常',慄:'懼',隙:'暇',幽:'深',披:'撥',壺:'樽',醉:'酣',夢:'寐',覺:'醒',凡:'皆',態:'貌',望:'見',緣:'沿',斫:'砍',焚:'燒',茅:'草',攀:'援',踞:'坐',壤:'土',衽:'席',窪:'凹',垤:'丘',穴:'洞',攢:'聚',蹙:'縮',積:'疊',遯:'遁',縈:'繞',繚:'繞',培:'塿',塿:'培',悠:'遠',觴:'杯',酌:'飲',暮:'晚',凝:'定',勸:'勉',寒:'冷',輮:'揉',槁:'枯',暴:'曝',挺:'直',礪:'磨',博:'廣',參:'驗',臾:'刻',跂:'企',招:'揮',臂:'手',疾:'響',假:'借',輿:'車',利:'快',致:'達',絕:'渡',淵:'潭',蛟:'龍',跬:'步',騏:'驥',驥:'騏',朽:'腐',鏤:'刻',螾:'蚓',埃:'塵',跪:'足',螯:'鉗',蟺:'鱔',躁:'急',淘:'洗',濤:'浪',拍:'打',捲:'掀',豪:'傑',姿:'態',灰:'煙',神:'魂',華:'白',酹:'祭',簫:'笛',魚:'龍',縷:'絲',驀:'忽',闌:'殘',覓:'尋',悽:'慘',慘:'悽',戚:'悲',乍:'驟',盞:'杯',敵:'抵',雁:'鴻',梧:'桐',愁:'憂',暝:'晚',喧:'鬧',浣:'洗',歇:'謝',邀:'請',徘:'徊',徊:'徘',結:'訂',邈:'遠',漢:'河',寇:'盜',盜:'賊',憐:'惜',祠:'廟',聊:'且',吟:'詠'};
+const FUNC_WORDS=['之','而','也','其','於','者','以','不','乃','則','乎','焉','哉','矣','與','為','所'];
+let proofLevel=0, pf=null;
+
+function reciteText(){return reciteIdx>=PARAS.length?PARAS.join('\n\n'):PARAS[reciteIdx];}
+function reciteTitleText(){return reciteIdx>=PARAS.length?'全文（共 '+PARAS.length+' 段）':TITLES[reciteIdx];}
+
+/* ---- ✍️ 自由背默 ---- */
 function renderReciteHead(){
-  document.getElementById('reciteTitle').textContent=reciteIdx===4?'全文（四段）':TITLES[reciteIdx];
+  document.getElementById('reciteTitle').textContent=reciteTitleText();
   document.getElementById('reciteResult').innerHTML='';
   const h=document.getElementById('reciteHint');
   h.style.display=hintOn?'block':'none';
   if(hintOn){
-    const src=reciteIdx===4?PARAS:[PARAS[reciteIdx]];
+    const src=reciteIdx>=PARAS.length?PARAS:[PARAS[reciteIdx]];
     h.innerHTML=src.map(p=>clauses(p).map(c=>'<b>'+strip(c)[0]+'</b>…').join('　')).join('<br><br>');
   }
 }
@@ -457,10 +835,13 @@ document.getElementById('submitRecite').onclick=()=>{
   const {status,ins,lcs}=lcsDiff(a,b);
   const pct=Math.round(lcs/a.length*100);
   saveScore('recite:'+reciteIdx,pct);
-  let html='',k=0;
+  let html='',k=0,lno=0,atStart=true;
   const esc=s=>s.replace(/</g,'&lt;');
   for(const c of orig){
-    if(isPunct(c)){html+='<span class="pu">'+(c===' '?'&nbsp;':c)+'</span>';continue;}
+    if(c==='\n'){html+='<br>';atStart=true;continue;}
+    if(isPunct(c)){atStart=false;html+='<span class="pu">'+(c===' '?'&nbsp;':c)+'</span>';continue;}
+    if(cur.numbered&&atStart){html+='<span class="lnum">'+(++lno)+'.</span>';}
+    atStart=false;
     if(ins[k].length)html+='<span class="extra">'+esc(ins[k].join(''))+'</span>';
     html+='<span class="'+status[k]+'">'+c+'</span>';k++;
   }
@@ -475,23 +856,198 @@ document.getElementById('submitRecite').onclick=()=>{
   scrollTo_(r.firstChild);
   if(pct===100) celebrate();
 };
-renderReciteHead();
+
+/* ---- 🔍 批改模式 ---- */
+document.getElementById('newProof').onclick=()=>{newProof();window.scrollTo({top:0,behavior:'smooth'});};
+document.getElementById('clearProof').onclick=()=>{if(!pf||pf.checked)return;document.querySelectorAll('#proofText .pc').forEach(s=>s.classList.remove('mark'));updateProofInfo();};
+
+function genProof(text,n){
+  const chars=[...text];
+  const cand=[];chars.forEach((c,i)=>{if(!isPunct(c))cand.push(i);});
+  // 隨機選位置，彼此至少相隔 3 字
+  const chosen=[];
+  for(const i of shuffle([...cand])){
+    if(chosen.every(j=>Math.abs(i-j)>=3)){chosen.push(i);if(chosen.length===n)break;}
+  }
+  chosen.sort((a,b)=>a-b);
+  // 平均分配四種錯誤類型
+  const TYPES=['wrong','miss','extra','swap'];
+  const types=shuffle(chosen.map((_,k)=>TYPES[k%4]));
+  const ops=new Map();
+  chosen.forEach((i,k)=>{
+    let t=types[k];
+    if(t==='swap'&&!(i+1<chars.length&&!isPunct(chars[i+1])&&chars[i+1]!==chars[i])) t='wrong';
+    ops.set(i,t);
+  });
+  const pool=[...strip(PARAS.join(''))];
+  const randChar=ex=>{let c,g=0;do{c=pool[Math.floor(Math.random()*pool.length)];}while(ex.includes(c)&&g++<50);return c;};
+  const pick=arr=>arr[Math.floor(Math.random()*arr.length)];
+  const tokens=[],errs=[];
+  let pendingMiss=null;
+  const pushChar=(ch,e)=>{
+    if(pendingMiss!==null){errs[pendingMiss].pos.push(tokens.length);pendingMiss=null;}
+    tokens.push({ch:ch,e:e});
+  };
+  const lastCharIdx=()=>{for(let k=tokens.length-1;k>=0;k--){if(!tokens[k].p)return k;}return -1;};
+  for(let i=0;i<chars.length;i++){
+    const c=chars[i];
+    if(isPunct(c)){tokens.push({ch:c,p:true});continue;}
+    const t=ops.get(i);
+    if(!t){pushChar(c,null);continue;}
+    const id=errs.length;
+    if(t==='wrong'){
+      let rep=(CONFUSE[c]&&Math.random()<0.75)?CONFUSE[c]:randChar([c,chars[i-1]||'',chars[i+1]||'']);
+      if(rep===c) rep=randChar([c]);
+      errs.push({type:'錯字',desc:'「'+rep+'」應為「'+c+'」',pos:[]});
+      errs[id].pos.push(tokens.length);pushChar(rep,id);
+    }else if(t==='miss'){
+      const prev=(chars[i-1]&&!isPunct(chars[i-1]))?chars[i-1]:'';
+      errs.push({type:'漏字',desc:(prev?'「'+prev+'」之後':'句首')+'漏了「'+c+'」',pos:[]});
+      const l=lastCharIdx();if(l>=0)errs[id].pos.push(l);
+      pendingMiss=id;
+    }else if(t==='extra'){
+      pushChar(c,null);
+      const fw=FUNC_WORDS.filter(w=>w!==c&&w!==chars[i+1]);
+      const ex=(Math.random()<0.6&&fw.length)?pick(fw):randChar([c,chars[i+1]||'']);
+      errs.push({type:'多字',desc:'「'+c+'」之後多了「'+ex+'」',pos:[]});
+      errs[id].pos.push(tokens.length);pushChar(ex,id);
+    }else if(t==='swap'){
+      const d=chars[i+1];
+      errs.push({type:'次序掉亂',desc:'「'+d+c+'」應為「'+c+d+'」',pos:[]});
+      errs[id].pos.push(tokens.length,tokens.length+1);
+      pushChar(d,id);pushChar(c,id);i++;
+    }
+  }
+  errs.forEach(e=>{if(e.pos.length===0)e.pos.push(0);});
+  return {tokens:tokens,errs:errs};
+}
+
+function newProof(){
+  const text=reciteText();
+  const lv=PLEVELS[proofLevel];
+  const g=genProof(text,lv.n);
+  pf={tokens:g.tokens,errs:g.errs,checked:false,show:lv.show};
+  document.getElementById('proofTitle').textContent=reciteTitleText()+'　（'+lv.name+'）';
+  document.getElementById('proofResult').innerHTML='';
+  const box=document.getElementById('proofText');box.innerHTML='';
+  let pln=0;
+  pf.tokens.forEach((t,idx)=>{
+    if(t.p&&t.ch==='\n'){box.appendChild(document.createElement('br'));return;}
+    if(cur.numbered&&!t.p&&(idx===0||(pf.tokens[idx-1].p&&pf.tokens[idx-1].ch==='\n'))){
+      const nm=document.createElement('span');nm.className='lnum';nm.textContent=(++pln)+'.';box.appendChild(nm);
+    }
+    const s=document.createElement('span');
+    if(t.p){s.className='pu';s.textContent=t.ch===' '?'\u00a0':t.ch;}
+    else{
+      s.className='pc';s.textContent=t.ch;s.dataset.i=idx;
+      s.onclick=()=>{if(pf.checked)return;s.classList.toggle('mark');updateProofInfo();};
+    }
+    box.appendChild(s);
+  });
+  updateProofInfo();
+}
+function updateProofInfo(){
+  if(!pf) return;
+  const m=document.querySelectorAll('#proofText .pc.mark').length;
+  document.getElementById('proofInfo').innerHTML=(pf.show?'本段共有 <b>'+pf.errs.length+'</b> 處錯誤':'🤫 挑戰級不會告訴你有多少處錯誤')+'　｜　已標記 <b>'+m+'</b> 處';
+}
+document.getElementById('checkProof').onclick=()=>{
+  if(!pf||pf.checked)return;
+  const marked=new Set([...document.querGetAllMarks()].map(s=>+s.dataset.i));
+  if(marked.size===0){document.getElementById('proofResult').innerHTML='<div class="result">請先點選你認為有錯的字，再按「檢查」。</div>';return;}
+  pf.checked=true;
+  const errPos=new Set();let found=0;
+  pf.errs.forEach(e=>{e.pos.forEach(p=>errPos.add(p));e.found=e.pos.some(p=>marked.has(p));if(e.found)found++;});
+  const falseMarks=[...marked].filter(p=>!errPos.has(p));
+  const pct=Math.max(0,Math.round(found/pf.errs.length*100)-falseMarks.length*10);
+  saveScore('proof:'+reciteIdx+':'+proofLevel,pct);
+  // 上色
+  document.querySelectorAll('#proofText .pc').forEach(s=>s.classList.remove('mark'));
+  const el=i=>document.querySelector('#proofText .pc[data-i="'+i+'"]');
+  pf.errs.forEach(e=>e.pos.forEach(p=>{const s=el(p);if(s)s.classList.add(e.found?'hit':'missed');}));
+  falseMarks.forEach(p=>{const s=el(p);if(s)s.classList.add('wrong');});
+  // 錯誤一覽
+  let list='';
+  pf.errs.forEach(e=>{
+    list+='<div class="'+(e.found?'ok':'')+'">'+(e.found?'✔':'<span style="color:#c00">✘</span>')+' <span class="tag">'+e.type+'</span>'+e.desc+(e.found?'':'　<span style="color:#c00;font-size:.9em">（未找到）</span>')+'</div>';
+  });
+  const r=document.getElementById('proofResult');
+  r.innerHTML=
+    '<div class="result'+(pct>=90?' great':'')+'"><span class="big">'+pct+' 分</span>　'+stars(pct)+
+    '<br>找出 '+found+' / '+pf.errs.length+' 處錯誤'+(falseMarks.length?'，誤標 <span class="extra" style="text-decoration:none">'+falseMarks.length+'</span> 處（每處扣 10 分）':'，沒有誤標')+'。'+
+    (pct===100?'<br>火眼金睛！這段課文你已經瞭如指掌了！🎉':pct>=70?'<br>很不錯！看看下面漏了哪些，記住正確寫法。':'<br>留意紅色的字，再翻回「讀課文」細讀一遍吧。')+
+    '</div>'+
+    '<div class="legend"><span class="pc hit" style="line-height:1.4">綠＝找對了</span><span class="pc missed" style="line-height:1.4">紅＝沒找到</span><span class="pc wrong" style="line-height:1.4">橙＝誤標</span></div>'+
+    '<div class="title" style="margin-top:14px">錯誤一覽</div><div class="textbox elist" style="line-height:1.6;min-height:auto">'+list+'</div>'+
+    '<div class="title" style="margin-top:14px">原文對照</div><div class="textbox">'+(function(){let n=0;return reciteText().split('\n').map(l=>(l&&cur.numbered)?'<span class="lnum">'+(++n)+'.</span>'+l:l).join('<br>');})()+'</div>';
+  scrollTo_(r.firstChild);
+  if(pct===100) celebrate();
+};
+// 小工具：取得所有已標記的字
+document.querGetAllMarks=function(){return document.querySelectorAll('#proofText .pc.mark');};
 
 /* ========== 📊 進度 ========== */
 function renderProgress(){
   const box=document.getElementById('progressCards');box.innerHTML='';
-  const row=(name,key)=>{const s=progress[key];return '<div><span>'+name+'</span><span><span class="stars">'+stars(s)+'</span> '+(s===undefined?'—':s+'分')+'</span></div>';};
+  const row=(name,key)=>{const s=progress[cur.id+':'+key];return '<div><span>'+name+'</span><span><span class="stars">'+stars(s)+'</span> '+(s===undefined?'—':s+'分')+'</span></div>';};
+  let html='';
   TITLES.forEach((t,i)=>{
     let h='<div class="card"><h3>'+t+'</h3>';
     LEVELS.forEach((l,li)=>h+=row('填空‧'+l.name,'cloze:'+i+':'+li));
-    h+=row('句子排序','order:'+i);h+=row('全文背默','recite:'+i);
-    box.innerHTML+=h+'</div>';
+    h+=row('句子排序','order:'+i);h+=row('自由背默','recite:'+i);
+    PLEVELS.forEach((l,li)=>h+=row('批改‧'+l.name,'proof:'+i+':'+li));
+    html+=h+'</div>';
   });
-  box.innerHTML+='<div class="card"><h3>全文</h3>'+row('全文背默','recite:4')+'</div>';
+  let h='<div class="card"><h3>全文</h3>'+row('自由背默','recite:'+PARAS.length);
+  PLEVELS.forEach((l,li)=>h+=row('批改‧'+l.name,'proof:'+PARAS.length+':'+li));
+  html+=h+'</div>';
+  box.innerHTML=html;
 }
 document.getElementById('resetProgress').onclick=()=>{
-  if(confirm('確定要清除所有紀錄嗎？')){progress={};try{localStorage.removeItem('ygys_progress');}catch(e){}renderProgress();}
+  if(!cur)return;
+  if(confirm('確定要清除本篇所有紀錄嗎？')){
+    Object.keys(progress).forEach(k=>{if(k.indexOf(cur.id+':')===0)delete progress[k];});
+    store.set('s2_beimo_progress',JSON.stringify(progress));
+    renderProgress();
+  }
 };
+
+/* ---------- 篇章載入後的初始化 ---------- */
+function initGame(){
+  readIdx=0;clozeIdx=0;clozeLevel=0;orderIdx=0;orderTimerIdx=0;reciteIdx=0;proofLevel=0;
+  hintOn=false;reciteMode='free';cz=null;od=null;pf=null;
+  document.getElementById('toggleHint').textContent='💡 顯示每句首字提示';
+  document.getElementById('freeMode').style.display='block';
+  document.getElementById('proofMode').style.display='none';
+  document.getElementById('reciteInput').value='';
+
+  makeChips(document.getElementById('readParas'),PNAMES,i=>{readIdx=i;renderRead();});
+  renderRead();
+
+  makeChips(document.getElementById('clozeParas'),PNAMES,i=>{clozeIdx=i;newCloze();});
+  makeChips(document.getElementById('clozeLevels'),LEVELS.map(l=>l.name),i=>{clozeLevel=i;newCloze();});
+  newCloze();
+
+  makeChips(document.getElementById('orderParas'),PNAMES,i=>{orderIdx=i;newOrder();});
+  makeChips(document.getElementById('orderTimerChips'),TIMER_OPTS.map(t=>t.name),i=>{orderTimerIdx=i;newOrder();});
+  newOrder();
+
+  makeChips(document.getElementById('reciteModes'),['✍️ 自由背默','🔍 批改模式'],i=>{
+    reciteMode=i===0?'free':'proof';
+    document.getElementById('freeMode').style.display=reciteMode==='free'?'block':'none';
+    document.getElementById('proofMode').style.display=reciteMode==='proof'?'block':'none';
+    if(reciteMode==='proof'&&!pf) newProof();
+  });
+  makeChips(document.getElementById('reciteParas'),[...PNAMES,'全文'],i=>{
+    reciteIdx=i;renderReciteHead();
+    if(reciteMode==='proof') newProof();
+  });
+  makeChips(document.getElementById('proofLevels'),PLEVELS.map(l=>l.name),i=>{proofLevel=i;newProof();});
+  renderReciteHead();
+}
+
+/* ---------- 啟動：顯示主選單 ---------- */
+buildMenu();
 </script>
 </body>
 </html>
