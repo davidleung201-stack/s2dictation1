@@ -1,0 +1,1055 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="中二字卡">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="theme-color" content="#efe7d6">
+<meta name="format-detection" content="telephone=no">
+<title>中二級文言字詞溫習 ‧ 字卡遊戲</title>
+<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lxgw-wenkai-tc-webfont@1.1.0/style.css">
+<style>
+:root{--paper:#efe7d6;--paper2:#f8f3e8;--paper3:#e6dcc6;--ink:#1f1d1b;--ink2:#443f3a;--ink3:#857d73;--mist:#d6cdbb;--red:#a8322a;--ok:#3f6b4c;--okbg:#e6ece2;--badbg:#f1e0dd;--line:rgba(31,29,27,.18);--line2:rgba(31,29,27,.32);--sat:env(safe-area-inset-top,0px);--sab:env(safe-area-inset-bottom,0px);--sal:env(safe-area-inset-left,0px);--sar:env(safe-area-inset-right,0px);--brush:9px 7px 10px 7px / 7px 10px 7px 9px}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html{-webkit-text-size-adjust:100%;text-size-adjust:100%;overscroll-behavior-y:none}
+html,body{height:100%}
+body{font-family:'LXGW WenKai TC','Kaiti TC','Kaiti SC','STKaiti','PingFang TC','Microsoft JhengHei',serif;color:var(--ink);min-height:100vh;min-height:100dvh;overflow-x:hidden;touch-action:manipulation;overscroll-behavior-y:none;background:radial-gradient(ellipse at 15% 10%,rgba(255,255,255,.55),transparent 55%),radial-gradient(ellipse at 85% 95%,rgba(120,100,70,.10),transparent 55%),var(--paper);background-attachment:fixed}
+button{touch-action:manipulation;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none;font-family:inherit}
+#bg,#fx{position:fixed;inset:0;width:100%;height:100%;pointer-events:none}
+#bg{z-index:0}#fx{z-index:80}
+header{position:relative;z-index:2;display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:12px;padding:calc(16px + var(--sat)) calc(clamp(14px,4vw,40px) + var(--sar)) 12px calc(clamp(14px,4vw,40px) + var(--sal))}
+.brand{display:flex;align-items:center;gap:14px}
+.brand h1{font-weight:700;font-size:clamp(22px,3.2vw,34px);letter-spacing:.14em;line-height:1.1}
+.brand h1 small{display:block;font-size:.45em;font-weight:400;color:var(--ink3);letter-spacing:.3em;margin-top:4px}
+.seal{display:grid;grid-template-columns:1fr 1fr;grid-auto-flow:column;direction:rtl;width:56px;height:56px;background:var(--red);color:#fff;font-size:14px;line-height:1;border-radius:5px;box-shadow:inset 0 0 0 2px rgba(255,255,255,.35),0 1px 3px rgba(0,0,0,.25);transform:rotate(-5deg);flex-shrink:0;padding:5px;overflow:hidden}
+.seal i{font-style:normal;display:grid;place-items:center;font-weight:700}
+.sound{width:40px;height:40px;border-radius:50%;border:1.5px solid var(--line2);background:rgba(248,243,232,.8);font-size:17px;cursor:pointer;color:var(--ink2);display:grid;place-items:center;flex-shrink:0}
+.sound.off{color:var(--ink3);text-decoration:line-through}
+nav{display:flex;gap:8px;flex-wrap:wrap}
+nav button{position:relative;font-size:15px;padding:8px 16px;min-height:44px;border-radius:var(--brush);border:1.5px solid var(--line2);background:rgba(248,243,232,.8);cursor:pointer;transition:.2s;display:inline-flex;align-items:center;gap:8px;color:var(--ink)}
+nav button .ico{font-size:17px;width:26px;height:26px;border:1.5px solid var(--ink2);border-radius:50%;display:grid;place-items:center;line-height:1}
+nav button.active{background:var(--ink);color:var(--paper2);border-color:var(--ink)}
+nav button.active .ico{border-color:var(--paper2)}
+nav button .badge{display:inline-block;min-width:20px;padding:0 6px;border-radius:999px;background:var(--red);color:#fff;font-size:12px;font-weight:700;line-height:20px}
+main{position:relative;z-index:1;padding:6px calc(clamp(14px,4vw,40px) + var(--sar)) 60px calc(clamp(14px,4vw,40px) + var(--sal));max-width:1100px;margin:0 auto}
+section.view{display:none;animation:fade .4s ease}
+section.view.active{display:block}
+@keyframes fade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+.btn{font-size:15px;padding:10px 18px;min-height:44px;border-radius:var(--brush);border:1.5px solid var(--ink2);background:var(--paper2);color:var(--ink);cursor:pointer;transition:.18s;box-shadow:1px 2px 0 rgba(31,29,27,.15)}
+.btn.ink{background:var(--ink);color:var(--paper2);border-color:var(--ink)}
+.btn.red{background:var(--red);color:#fff;border-color:var(--red)}
+.btn.ghost{background:transparent;box-shadow:none;border-color:var(--line2);color:var(--ink2)}
+.btn.small{font-size:13px;padding:6px 12px;min-height:36px}
+.btn:disabled{opacity:.4;cursor:not-allowed;transform:none}
+.btn:active:not(:disabled),.opt:active:not(:disabled),.chip:active,.mini:active,nav button:active,.scroll-card .acts button:active{transform:scale(.97)}
+.toolbar{display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:center;margin:10px 0 18px}
+.chips{display:flex;gap:6px;flex-wrap:wrap;justify-content:center}
+.chip{font-size:13px;padding:8px 14px;min-height:36px;border-radius:999px;border:1.5px solid var(--line2);background:rgba(248,243,232,.8);cursor:pointer;color:var(--ink)}
+.chip.active{background:var(--ink);color:var(--paper2);border-color:var(--ink)}
+.counter{font-size:14px;color:var(--ink3);letter-spacing:.1em}
+.subhead{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;margin:4px 0 12px}
+.subtitle{flex:1;text-align:center;font-size:clamp(17px,2.4vw,22px);letter-spacing:.12em}
+.subtitle span{display:block;font-size:13px;color:var(--ink3);letter-spacing:.2em;margin-top:2px}
+mark{background:none;color:var(--red);font-weight:700;-webkit-text-emphasis:filled circle var(--red);text-emphasis:filled circle var(--red);-webkit-text-emphasis-position:under right;text-emphasis-position:under right}
+.panel{position:relative;background:rgba(248,243,232,.92);border:1px solid var(--line2);border-radius:var(--brush);padding:28px clamp(18px,4vw,40px);box-shadow:0 14px 40px rgba(60,50,40,.14);max-width:860px;margin:0 auto}
+.panel::before{content:"";position:absolute;inset:7px;border:1px solid var(--line);border-radius:6px;pointer-events:none}
+.panel>*{position:relative}
+h2.ink{font-size:24px;letter-spacing:.2em;margin-bottom:16px;font-weight:700;position:relative;padding-bottom:8px}
+h2.ink::after{content:"";position:absolute;left:0;bottom:0;width:80px;height:4px;background:var(--ink);opacity:.8;border-radius:50% 40% 60% 30%/60% 40% 70% 30%}
+.lead{color:var(--ink2);font-size:15px;line-height:1.8;margin-bottom:14px}
+.setup-row{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin:12px 0}
+.setup-row label.lbl{min-width:90px;color:var(--ink3);font-size:14px;letter-spacing:.15em}
+.opt-toggle{display:inline-flex;align-items:center;gap:6px;font-size:15px;padding:10px 14px;min-height:44px;border:1.5px solid var(--line2);border-radius:var(--brush);background:var(--paper2);cursor:pointer;-webkit-user-select:none;user-select:none}
+.opt-toggle input{accent-color:var(--ink);width:18px;height:18px}
+.opt-toggle:has(input:checked){border-color:var(--ink);background:var(--paper3)}
+.empty{text-align:center;padding:50px 20px;color:var(--ink3);font-size:17px;background:rgba(248,243,232,.7);border:1px dashed var(--line2);border-radius:var(--brush);line-height:1.8}
+.hero{text-align:center;margin:6px auto 22px;max-width:720px}
+.hero p{color:var(--ink2);font-size:15px;line-height:1.9}
+.hero .quick{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:12px}
+.menu{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:16px}
+.scroll-card{display:flex;background:var(--paper2);border:1.5px solid var(--ink2);border-radius:var(--brush);overflow:hidden;box-shadow:2px 3px 0 rgba(31,29,27,.12);transition:.2s}
+.scroll-card .vt{writing-mode:vertical-rl;background:var(--ink);color:var(--paper2);padding:14px 9px;font-size:17px;letter-spacing:.2em;display:flex;align-items:center;justify-content:center;flex-shrink:0;min-width:40px}
+.scroll-card .body{flex:1;padding:14px 16px;display:flex;flex-direction:column;gap:6px;min-width:0}
+.scroll-card h3{font-size:19px;letter-spacing:.1em;font-weight:700;display:flex;align-items:center;gap:8px}
+.scroll-card h3 .num{width:26px;height:26px;border-radius:50%;background:var(--red);color:#fff;display:grid;place-items:center;font-size:13px;flex-shrink:0}
+.scroll-card .author{font-size:13px;color:var(--ink3);letter-spacing:.15em}
+.pbar{height:7px;background:rgba(31,29,27,.08);border-radius:999px;overflow:hidden}
+.pbar i{display:block;height:100%;background:linear-gradient(90deg,var(--ink2),var(--ink));border-radius:999px;transition:width .4s}
+.scroll-card .meta{font-size:13px;color:var(--ink2);display:flex;gap:10px;flex-wrap:wrap}
+.scroll-card .meta .w{color:var(--red)}
+.scroll-card .acts{display:flex;gap:8px;margin-top:auto;padding-top:6px}
+.scroll-card .acts button{flex:1;font-size:14px;padding:9px 8px;min-height:44px;border-radius:var(--brush);border:1.5px solid var(--ink2);background:var(--paper2);cursor:pointer;color:var(--ink)}
+.scroll-card .acts button.ink{background:var(--ink);color:var(--paper2)}
+.card{width:min(760px,94vw);height:min(560px,74vh);height:min(560px,74dvh);position:relative;perspective:1800px;margin:0 auto;cursor:pointer;touch-action:pan-y;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
+.card-inner{position:absolute;inset:0;transition:transform .7s cubic-bezier(.4,.2,.2,1);transform-style:preserve-3d;-webkit-transform-style:preserve-3d}
+.card.flipped .card-inner{transform:rotateY(180deg)}
+.face{position:absolute;inset:0;backface-visibility:hidden;-webkit-backface-visibility:hidden;border-radius:var(--brush);background:var(--paper2);border:1.5px solid var(--ink2);box-shadow:0 20px 50px rgba(60,50,40,.18);padding:26px 30px;display:flex;flex-direction:column;overflow:hidden;transform:translateZ(0)}
+.face::before{content:"";position:absolute;inset:9px;border:1px solid var(--line);border-radius:6px;pointer-events:none}
+.face.back{transform:rotateY(180deg)}
+.card:not(.flipped) .face.back,.card.flipped .face.front{pointer-events:none}
+.face .tag{font-size:12px;letter-spacing:.4em;color:var(--ink3);display:flex;align-items:center;gap:10px}
+.face .tag::after{content:"";flex:1;height:1px;background:var(--line)}
+.front .sentence{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;text-align:center}
+.front .sentence .text{font-size:clamp(26px,4.6vw,44px);font-weight:700;letter-spacing:.1em;line-height:1.6}
+.front .src{font-size:14px;color:var(--ink3);letter-spacing:.15em}
+.front .ask{font-size:16px;color:var(--ink2);margin-top:6px}
+.front .hint{text-align:center;font-size:13px;color:var(--ink3);letter-spacing:.25em}
+.mastered-stamp{position:absolute;top:22px;right:24px;transform:rotate(10deg);border:3px solid var(--red);color:var(--red);font-weight:700;padding:3px 10px;border-radius:5px;letter-spacing:.25em;opacity:0;transition:.3s;font-size:14px}
+.card.mastered .mastered-stamp{opacity:.85}
+.back .scroll{flex:1;overflow:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;padding-right:6px;margin-top:10px;cursor:auto;-webkit-user-select:text;user-select:text;touch-action:pan-y;display:flex;flex-direction:column;gap:14px}
+.defmain{display:flex;align-items:center;gap:18px;padding:10px 0 6px}
+.defmain .bigw{font-size:clamp(48px,8vw,76px);font-weight:700;line-height:1;min-width:1.2em;text-align:center}
+.defmain .meaning{font-size:clamp(20px,3vw,28px);font-weight:700;line-height:1.5}
+.pos{display:inline-block;font-size:12px;background:var(--paper3);color:var(--ink2);padding:3px 10px;border-radius:999px;border:1px solid var(--line);margin-top:6px}
+.block h4{font-size:12px;letter-spacing:.4em;color:var(--ink3);margin-bottom:6px;font-weight:400;display:flex;align-items:center;gap:8px}
+.block h4::after{content:"";flex:1;height:1px;background:var(--line)}
+.block .orig{font-size:clamp(17px,2.4vw,21px);line-height:1.8;font-weight:600}
+.block .orig .src{color:var(--ink3);font-size:13px;margin-left:8px;font-weight:400}
+.block .tr{font-size:clamp(15px,2vw,17px);line-height:1.9;color:var(--ink2)}
+.card-actions{display:flex;flex-wrap:wrap;justify-content:center;gap:10px;margin-top:20px}
+.kbd,.swipe-hint{font-size:11px;color:var(--ink3);text-align:center;margin-top:10px;letter-spacing:.05em}
+.swipe-hint{display:none}
+.progress{height:8px;background:rgba(31,29,27,.08);border-radius:999px;overflow:hidden;margin:6px 0 18px}
+.progress i{display:block;height:100%;background:var(--ink);width:0;transition:width .4s}
+.qmeta{display:flex;justify-content:space-between;font-size:13px;color:var(--ink3);letter-spacing:.1em}
+#qTimer{font-weight:700;font-size:15px;color:var(--ink2)}
+#qTimer.low{color:var(--red);animation:pulse 1s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.5}}
+.qtype{display:inline-block;font-size:12px;padding:2px 10px;border-radius:999px;background:var(--paper3);color:var(--ink2);border:1px solid var(--line);margin-bottom:10px;letter-spacing:.1em}
+.stem{font-size:clamp(20px,3vw,27px);line-height:1.8;font-weight:700;margin-bottom:6px}
+.stem-src{font-size:14px;color:var(--ink3);margin-bottom:18px;min-height:1em;letter-spacing:.1em}
+.options{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
+.opt{text-align:left;font-size:17px;padding:14px 16px;min-height:60px;border-radius:var(--brush);border:1.5px solid var(--line2);background:var(--paper2);cursor:pointer;transition:.18s;display:flex;gap:12px;align-items:center;color:var(--ink);line-height:1.5}
+.opt .n{width:28px;height:28px;border-radius:50%;border:1.5px solid var(--ink2);display:inline-flex;align-items:center;justify-content:center;font-weight:700;flex-shrink:0;font-size:14px}
+.opt:disabled{cursor:default}
+.opt.correct{border-color:var(--ok);background:var(--okbg)}.opt.correct .n{background:var(--ok);color:#fff;border-color:var(--ok)}
+.opt.wrong{border-color:var(--red);background:var(--badbg);animation:shake .4s}.opt.wrong .n{background:var(--red);color:#fff;border-color:var(--red)}
+@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
+.feedback{position:relative;margin-top:18px;padding:16px 70px 16px 18px;border-radius:var(--brush);background:var(--paper2);border:1.5px solid var(--line2);display:none;line-height:1.9;font-size:15px}
+.feedback.show{display:block;animation:fade .3s}
+.feedback .head{font-size:18px;font-weight:700;margin-bottom:4px}
+.feedback.good .head{color:var(--ok)}.feedback.badf .head{color:var(--red)}
+.feedback .big{font-size:20px;font-weight:700}
+.stamp{position:absolute;right:12px;top:10px;width:52px;height:52px;border:3px solid var(--red);color:var(--red);display:grid;place-items:center;font-size:30px;font-weight:900;border-radius:6px;transform:rotate(-12deg);opacity:.85;animation:stamp .35s ease-out}
+.stamp.bad{border-color:var(--ink3);color:var(--ink3)}
+@keyframes stamp{from{transform:rotate(-12deg) scale(1.9);opacity:0}to{transform:rotate(-12deg) scale(1);opacity:.85}}
+.quiz-foot{display:flex;justify-content:flex-end;gap:10px;margin-top:16px;align-items:center}
+.result-top{display:flex;flex-wrap:wrap;gap:24px;align-items:center;justify-content:center;margin:10px 0 22px}
+.ring{width:150px;height:150px;border-radius:50%;display:grid;place-items:center;background:conic-gradient(var(--ink) 0%,var(--paper3) 0);position:relative}
+.ring::before{content:"";position:absolute;inset:12px;border-radius:50%;background:var(--paper2);border:1px solid var(--line)}
+.ring span{position:relative;font-size:34px;font-weight:700;text-align:center}
+.ring span small{font-size:14px;color:var(--ink3);display:block;font-weight:400}
+.result-msg{font-size:19px;line-height:1.8;max-width:440px}
+.wrong-list{display:flex;flex-direction:column;gap:10px;margin-top:10px}
+.wrong-item{background:var(--paper2);border-radius:var(--brush);padding:14px 16px;border:1px solid var(--line2);border-left:4px solid var(--red);font-size:15px;line-height:1.8}
+.wrong-item .q{font-weight:700;font-size:17px}
+.wrong-item .ans span{display:inline-block;padding:1px 8px;border-radius:6px;margin-right:6px;font-size:14px}
+.wrong-item .ans .you{background:var(--badbg);color:var(--red);text-decoration:line-through}
+.wrong-item .ans .ok{background:var(--okbg);color:var(--ok)}
+.wrong-item .meta{font-size:13px;color:var(--ink3)}
+.hist-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch;border-radius:8px}
+table.hist{width:100%;min-width:520px;border-collapse:collapse;font-size:14px;background:var(--paper2);border:1px solid var(--line2)}
+table.hist th,table.hist td{padding:8px 12px;border-bottom:1px solid var(--line);text-align:left;white-space:nowrap}
+table.hist th{background:var(--paper3);color:var(--ink2);font-weight:700;letter-spacing:.15em}
+table.hist td.pct b{color:var(--red)}
+.tbtn{font-size:12px;padding:6px 12px;min-height:32px;border-radius:999px;border:1px solid var(--ink2);background:var(--paper2);cursor:pointer;color:var(--ink)}
+.grp{margin-top:18px}
+.grp h3{font-size:16px;letter-spacing:.2em;color:var(--ink2);display:flex;align-items:center;gap:10px;margin-bottom:10px}
+.grp h3::after{content:"";flex:1;height:1px;background:var(--line2)}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:12px}
+.mini{background:var(--paper2);border-radius:var(--brush);padding:14px;border:1.5px solid var(--line2);cursor:pointer;transition:.18s;position:relative}
+.mini .s{font-size:17px;font-weight:700;letter-spacing:.05em;line-height:1.6;padding-right:60px}
+.mini .w{font-size:13px;color:var(--ink2);margin-top:6px}
+.mini .cnt{position:absolute;top:10px;right:10px;background:var(--red);color:#fff;font-size:12px;border-radius:999px;padding:2px 8px}
+.mini.m{border-color:var(--ok)}.mini.m .cnt{background:var(--ok)}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:14px;margin-bottom:20px}
+.stat{background:var(--paper2);border-radius:var(--brush);padding:18px;text-align:center;border:1.5px solid var(--line2)}
+.stat b{display:block;font-size:34px;font-weight:700}
+.stat b.red{color:var(--red)}
+.stat span{font-size:13px;color:var(--ink3);letter-spacing:.15em}
+.tlist{display:flex;flex-direction:column;gap:8px;margin-bottom:20px}
+.trow{display:grid;grid-template-columns:minmax(120px,1.4fr) 2fr auto;gap:12px;align-items:center;background:var(--paper2);border:1px solid var(--line2);border-radius:var(--brush);padding:10px 14px;font-size:14px}
+.trow .t{font-weight:700;letter-spacing:.05em}
+.trow .t small{display:block;color:var(--ink3);font-weight:400;font-size:12px}
+.trow .n{text-align:right;color:var(--ink2);white-space:nowrap}
+.toast{position:fixed;left:50%;bottom:calc(30px + var(--sab));transform:translateX(-50%) translateY(20px);background:var(--ink);color:var(--paper2);padding:10px 18px;border-radius:999px;font-size:14px;opacity:0;transition:.3s;z-index:60;pointer-events:none;max-width:90vw;text-align:center}
+.toast.show{opacity:1;transform:translateX(-50%)}
+footer{position:relative;z-index:1;text-align:center;font-size:12px;color:var(--ink3);padding:10px;letter-spacing:.15em}
+.a2hs{position:fixed;left:12px;right:12px;bottom:calc(84px + var(--sab));z-index:70;background:var(--paper2);border:1.5px solid var(--ink2);border-radius:var(--brush);padding:12px 44px 12px 14px;font-size:14px;line-height:1.7;box-shadow:0 10px 30px rgba(0,0,0,.2);display:none}
+.a2hs.show{display:block;animation:fade .3s}
+.a2hs b{color:var(--red)}
+.a2hs button{position:absolute;right:6px;top:6px;width:34px;height:34px;border:none;background:transparent;font-size:20px;color:var(--ink3);cursor:pointer}
+.modal{position:fixed;inset:0;z-index:90;background:rgba(31,29,27,.45);display:flex;align-items:center;justify-content:center;padding:20px;-webkit-backdrop-filter:blur(4px);backdrop-filter:blur(4px);animation:fade .2s}
+.modal[hidden]{display:none}
+.modal-box{background:var(--paper2);border:1.5px solid var(--ink2);border-radius:var(--brush);padding:24px 22px;max-width:380px;width:100%;box-shadow:0 24px 60px rgba(0,0,0,.3)}
+.modal-msg{font-size:17px;line-height:1.8;margin-bottom:18px}
+.modal-btns{display:flex;gap:10px;justify-content:flex-end}
+.modal-btns .btn{flex:1}
+@media (hover:hover){nav button:hover{transform:translateY(-1px)}.btn:hover:not(:disabled){transform:translateY(-1px)}.opt:hover:not(:disabled){border-color:var(--ink);transform:translateY(-2px)}.mini:hover,.scroll-card:hover{transform:translateY(-3px);box-shadow:3px 8px 20px rgba(31,29,27,.15)}}
+@media (hover:none) and (pointer:coarse){.kbd{display:none}.swipe-hint{display:block}}
+@media (max-width:720px){
+  header{padding:calc(10px + var(--sat)) 14px 4px;justify-content:center}
+  .brand{gap:10px}.brand h1{font-size:21px;text-align:center}.brand h1 small{font-size:11px;letter-spacing:.2em}
+  nav{position:fixed;left:0;right:0;bottom:0;z-index:20;display:grid;grid-template-columns:repeat(4,1fr);gap:4px;background:rgba(239,231,214,.96);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);border-top:1.5px solid var(--line2);padding:6px calc(6px + var(--sar)) calc(6px + var(--sab)) calc(6px + var(--sal))}
+  nav button{border:none;background:transparent;border-radius:10px;padding:5px 2px;font-size:11px;flex-direction:column;justify-content:center;gap:3px;min-height:52px}
+  nav button .ico{font-size:16px;width:28px;height:28px}
+  nav button.active{background:var(--paper3);color:var(--ink);border:none}
+  nav button.active .ico{background:var(--ink);color:var(--paper2);border-color:var(--ink)}
+  nav button .badge{position:absolute;top:0;right:calc(50% - 26px);font-size:11px;line-height:18px;min-width:18px}
+  main{padding:4px 12px calc(96px + var(--sab))}
+  footer{display:none}.toast{bottom:calc(84px + var(--sab))}
+  .menu{grid-template-columns:1fr}
+  .card{width:100%;height:clamp(380px,60vh,540px);height:clamp(380px,60dvh,540px)}
+  .face{padding:18px 16px}.front .sentence .text{font-size:clamp(24px,6.6vw,34px)}.front .ask{font-size:14px}.defmain{gap:14px}
+  .card-actions{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:14px}
+  .card-actions .btn{padding:10px 6px;font-size:14px}
+  .card-actions #flipBtn,.card-actions #masterBtn{grid-column:1/-1}
+  .panel{padding:20px 14px}h2.ink{font-size:20px}.options{grid-template-columns:1fr}
+  .setup-row label.lbl{min-width:100%}.result-msg{font-size:17px;text-align:center}
+  .stats{grid-template-columns:repeat(2,1fr)}.trow{grid-template-columns:1fr;gap:6px}.trow .n{text-align:left}.subtitle{font-size:16px}
+  .quiz-foot{position:sticky;bottom:calc(72px + var(--sab));z-index:5;background:rgba(248,243,232,.96);margin:14px -6px 0;padding:10px 6px 6px;border-top:1px solid var(--line)}
+  .quiz-foot #nextQ{flex:1;min-height:50px;font-size:17px}
+}
+@media (max-height:500px) and (orientation:landscape) and (pointer:coarse){
+  header{padding-top:calc(4px + var(--sat));padding-bottom:0}
+  .brand h1 small,.hero p,.kbd,.swipe-hint{display:none}.brand h1{font-size:18px}
+  .card{height:min(78dvh,420px)}.face{padding:12px 16px}.card-actions{margin-top:8px}
+  main{padding-bottom:calc(70px + var(--sab))}
+}
+@media (prefers-reduced-motion:reduce){.card-inner{transition-duration:.2s}section.view,.feedback.show,.stamp{animation:none}}
+</style>
+</head>
+<body>
+<canvas id="bg"></canvas>
+<canvas id="fx"></canvas>
+
+<header>
+  <div class="brand">
+    <span class="seal" aria-hidden="true"><i>新</i><i>知</i><i>故</i><i>溫</i></span>
+    <h1>中二級文言字詞溫習<small>九篇範文 ‧ 字卡遊戲</small></h1>
+    <button class="sound" id="soundBtn" title="音效開關" aria-label="音效開關">♪</button>
+  </div>
+  <nav>
+    <button data-view="home" class="active"><span class="ico">卷</span><span class="lbl">主選單</span></button>
+    <button data-view="final"><span class="ico">試</span><span class="lbl">試前總測</span></button>
+    <button data-view="wrong"><span class="ico">錄</span><span class="lbl">錯題本</span><span class="badge" id="wrongBadge">0</span></button>
+    <button data-view="stats"><span class="ico">跡</span><span class="lbl">學習進度</span></button>
+  </nav>
+</header>
+
+<main>
+  <section class="view active" id="view-home">
+    <div class="hero">
+      <p>選取篇章，逐張翻閱字卡，記熟字解、詞性與句譯；<br>臨考前可進入「試前總測」，一次過以測考形式溫習九篇全部字詞。</p>
+      <div class="quick"><button class="btn ink" id="goFinal">試前總測</button><button class="btn" id="goWrong">錯題本</button><button class="btn ghost" id="goStats">學習進度</button></div>
+    </div>
+    <div class="menu" id="menuGrid"></div>
+  </section>
+
+  <section class="view" id="view-learn">
+    <div class="subhead">
+      <button class="btn small" id="backHome">← 主選單</button>
+      <div class="subtitle"><b id="learnTitle"></b><span id="learnAuthor"></span></div>
+      <button class="btn small ink" id="learnToQuiz">測考此篇</button>
+    </div>
+    <div class="toolbar">
+      <div class="chips" id="filterChips">
+        <button class="chip active" data-f="all">全部字詞</button>
+        <button class="chip" data-f="unmastered">未掌握</button>
+        <button class="chip" data-f="mastered">已掌握</button>
+        <button class="chip" data-f="wrong">錯題</button>
+      </div>
+      <span class="counter" id="counter"></span>
+    </div>
+    <div id="cardWrap"></div>
+    <div class="card-actions">
+      <button class="btn ink" id="flipBtn">翻轉字卡</button>
+      <button class="btn" id="prevBtn">◀ 上一張</button>
+      <button class="btn" id="shuffleBtn">洗牌</button>
+      <button class="btn" id="nextBtn">下一張 ▶</button>
+      <button class="btn red" id="masterBtn">✔ 標記已掌握</button>
+    </div>
+    <div class="kbd">鍵盤：← → 切換字卡 ｜ 空白鍵／Enter 翻轉 ｜ M 標記已掌握</div>
+    <div class="swipe-hint">點一下翻轉字卡 ｜ 左右滑動切換上一張／下一張</div>
+  </section>
+
+  <section class="view" id="view-quiz">
+    <div class="subhead">
+      <button class="btn small" id="quizBack">← 主選單</button>
+      <div class="subtitle"><b id="quizTitle">自我測考</b><span id="quizSub"></span></div>
+      <span style="width:84px"></span>
+    </div>
+    <div class="panel" id="quizSetup">
+      <h2 class="ink">自我測考</h2>
+      <p class="lead">以本篇<b>原文句子</b>出題，考核你是否記得句中重點字詞的字解。錯誤選項經特別設計（今義、同字他義、形近字），務須細心分辨。答錯會記入錯題本。</p>
+      <div class="setup-row"><label class="lbl">題目數量</label>
+        <label class="opt-toggle"><input type="radio" name="qn" value="10" checked>10 題</label>
+        <label class="opt-toggle"><input type="radio" name="qn" value="20">20 題</label>
+        <label class="opt-toggle"><input type="radio" name="qn" value="all">本篇全部</label>
+      </div>
+      <div class="setup-row"><label class="lbl">範圍</label>
+        <label class="opt-toggle"><input type="radio" name="scope" value="all" checked>全部字詞</label>
+        <label class="opt-toggle"><input type="radio" name="scope" value="unmastered">只測未掌握</label>
+        <label class="opt-toggle"><input type="radio" name="scope" value="wrong">只測本篇錯題</label>
+      </div>
+      <div class="setup-row"><label class="lbl">計時</label>
+        <label class="opt-toggle"><input type="radio" name="qtimer" value="0" checked>不計時</label>
+        <label class="opt-toggle"><input type="radio" name="qtimer" value="60">1 分鐘</label>
+        <label class="opt-toggle"><input type="radio" name="qtimer" value="120">2 分鐘</label>
+        <label class="opt-toggle"><input type="radio" name="qtimer" value="180">3 分鐘</label>
+      </div>
+      <div class="setup-row" style="margin-top:20px">
+        <button class="btn ink" id="startQuiz">開始測驗</button>
+        <button class="btn" id="setupToLearn">先看字卡</button>
+      </div>
+    </div>
+    <div class="panel" id="quizPlay" style="display:none">
+      <div class="qmeta"><span id="qIndex"></span><span id="qTimer" style="display:none"></span><span id="qScore"></span></div>
+      <div class="progress"><i id="qBar"></i></div>
+      <div class="qtype" id="qType"></div>
+      <div class="stem" id="qStem"></div>
+      <div class="stem-src" id="qSrc"></div>
+      <div class="options" id="qOptions"></div>
+      <div class="feedback" id="qFeedback"></div>
+      <div class="quiz-foot">
+        <button class="btn ghost small" id="quitQuiz">結束測驗</button>
+        <button class="btn ink" id="nextQ" style="display:none">下一題 ▶</button>
+      </div>
+    </div>
+    <div class="panel" id="quizResult" style="display:none">
+      <h2 class="ink">測驗結果</h2>
+      <div class="result-top">
+        <div class="ring" id="ring"><span id="ringText"></span></div>
+        <div class="result-msg" id="resultMsg"></div>
+      </div>
+      <div class="setup-row" style="justify-content:center">
+        <button class="btn" id="reviewWrongCards">檢討錯題（看字卡）</button>
+        <button class="btn red" id="retestWrong">重測錯題</button>
+        <button class="btn ink" id="againQuiz">再來一次</button>
+        <button class="btn ghost" id="resultHome">返回主選單</button>
+      </div>
+      <div id="breakdownWrap" style="display:none">
+        <h3 style="margin-top:22px;font-size:16px;letter-spacing:.2em;color:var(--ink2)">各篇正確率</h3>
+        <div class="hist-wrap" style="margin-top:8px"><table class="hist"><thead><tr><th>篇章</th><th>題數</th><th>答對</th><th>正確率</th><th></th></tr></thead><tbody id="breakdownBody"></tbody></table></div>
+      </div>
+      <h3 style="margin-top:22px;font-size:16px;letter-spacing:.2em;color:var(--red)" id="wrongTitle">答錯題目檢討</h3>
+      <div class="wrong-list" id="wrongList"></div>
+    </div>
+  </section>
+
+  <section class="view" id="view-final">
+    <div class="panel">
+      <h2 class="ink">試前總測</h2>
+      <p class="lead">一次過以測考形式溫習<b>九篇全部字詞</b>。題目全以原文句子出題，答錯會記入錯題本；完成後會顯示各篇正確率，方便針對弱篇重點溫習。</p>
+      <div class="stats" id="finalStats"></div>
+      <div class="setup-row"><label class="lbl">題量</label>
+        <label class="opt-toggle"><input type="radio" name="fqn" value="3">每篇抽 3 題</label>
+        <label class="opt-toggle"><input type="radio" name="fqn" value="5" checked>每篇抽 5 題</label>
+        <label class="opt-toggle"><input type="radio" name="fqn" value="10">每篇抽 10 題</label>
+        <label class="opt-toggle"><input type="radio" name="fqn" value="all">全部字詞</label>
+      </div>
+      <div class="setup-row"><label class="lbl">範圍</label>
+        <label class="opt-toggle"><input type="radio" name="fscope" value="all" checked>全部字詞</label>
+        <label class="opt-toggle"><input type="radio" name="fscope" value="unmastered">只測未掌握</label>
+        <label class="opt-toggle"><input type="radio" name="fscope" value="wrong">只測錯題本</label>
+      </div>
+      <div class="setup-row"><label class="lbl">次序</label>
+        <label class="opt-toggle"><input type="radio" name="forder" value="mix" checked>九篇隨機混合</label>
+        <label class="opt-toggle"><input type="radio" name="forder" value="seq">依篇章次序</label>
+      </div>
+      <div class="setup-row"><label class="lbl">計時</label>
+        <label class="opt-toggle"><input type="radio" name="ftimer" value="0" checked>不計時</label>
+        <label class="opt-toggle"><input type="radio" name="ftimer" value="60">1 分鐘</label>
+        <label class="opt-toggle"><input type="radio" name="ftimer" value="120">2 分鐘</label>
+        <label class="opt-toggle"><input type="radio" name="ftimer" value="180">3 分鐘</label>
+      </div>
+      <div class="setup-row" style="margin-top:20px">
+        <button class="btn ink" id="startFinal">開始總測</button>
+        <span id="finalCount" style="color:var(--ink3);font-size:14px"></span>
+      </div>
+    </div>
+  </section>
+
+  <section class="view" id="view-wrong">
+    <div class="panel">
+      <h2 class="ink">錯題本</h2>
+      <p class="lead">以下為測驗中曾答錯的字詞（按篇章分列，數字為答錯次數）。點一下可打開字卡溫習；掌握後可在字卡標記「已掌握」。</p>
+      <div class="setup-row">
+        <button class="btn ink" id="quizWrongAll">測考全部錯題</button>
+        <button class="btn" id="learnWrongBtn">逐張溫習</button>
+        <button class="btn ghost small" id="clearWrong">清空錯題本</button>
+      </div>
+      <div id="wrongGroups"></div>
+    </div>
+  </section>
+
+  <section class="view" id="view-stats">
+    <div class="panel">
+      <h2 class="ink">學習進度</h2>
+      <div class="stats" id="statCards"></div>
+      <h3 style="font-size:15px;letter-spacing:.2em;color:var(--ink3);margin:10px 0">各篇掌握情況</h3>
+      <div class="tlist" id="textProgress"></div>
+      <h3 style="font-size:15px;letter-spacing:.2em;color:var(--ink3);margin:10px 0">測驗紀錄</h3>
+      <div class="hist-wrap"><table class="hist"><thead><tr><th>日期時間</th><th>測驗</th><th>題數</th><th>答對</th><th>正確率</th></tr></thead><tbody id="histBody"></tbody></table></div>
+      <div class="setup-row" style="margin-top:16px"><button class="btn ghost small" id="resetAll">重設所有進度</button><span style="font-size:12px;color:var(--ink3)">進度只儲存在此裝置的瀏覽器內</span></div>
+    </div>
+  </section>
+</main>
+<footer>中二級 ‧ 中國語文 ‧ 文言字詞溫習</footer>
+<div class="toast" id="toast"></div>
+<div class="a2hs" id="a2hs">在 Safari 按 <b>分享 ⬆︎</b> → <b>加入主畫面</b>，即可全螢幕使用，體驗更接近 App。<button id="a2hsClose" aria-label="關閉">×</button></div>
+<div class="modal" id="modal" hidden>
+  <div class="modal-box" role="dialog" aria-modal="true">
+    <div class="modal-msg" id="modalMsg"></div>
+    <div class="modal-btns"><button class="btn" id="modalNo">取消</button><button class="btn ink" id="modalYes">確定</button></div>
+  </div>
+</div>
+
+<!-- ============================================================
+     字卡資料區（內容取自《中二文言文字詞表》）
+     每行格式：字詞|詞性|字解|原文|句解|（留空）|出處（詩詞用，可省略）
+     ============================================================ -->
+<script type="text/plain" class="dat" data-id="t1" data-num="一" data-title="愚公移山" data-author="列子">
+且|副詞|將近、快要|北山愚公者，年且九十|北山有一位叫愚公的老人，年紀將近九十歲。
+懲|動詞（意動用法）|苦於（為……所苦）|懲山北之塞，出入之迂也|他苦於山北面道路阻塞，出去和回來都要繞遠路。
+塞|動詞／名詞|阻塞、閉塞不通|懲山北之塞，出入之迂也|他苦於山北面道路阻塞，出去和回來都要繞遠路。
+迂|形容詞|迂迴、曲折繞遠|懲山北之塞，出入之迂也|他苦於山北面道路阻塞，出去和回來都要繞遠路。
+謀|動詞|商量、謀議、計議|聚室而謀|於是召集全家大小一起商量。
+汝|代詞|你們（第二人稱代詞）|吾與汝畢力平險|我和你們盡一切力量鏟平這兩座險峻的大山。
+畢|動詞／副詞|竭盡、用盡、全部|吾與汝畢力平險|我和你們盡一切力量鏟平這兩座險峻的大山。
+雜然|副詞／形容詞|紛紛地（形容眾人異口同聲的樣子）|雜然相許|家人紛紛表示贊同他的提議。
+許|動詞|贊同、贊成、答應|雜然相許|家人紛紛表示贊同他的提議。
+曾|副詞|尚且、連……都（加強否定語氣）|以君之力，曾不能損魁父之丘|憑你的力氣，連魁父這樣的小土丘尚且不能削平。
+焉|疑問代詞|哪裏、何處|且焉置土石？|況且把挖下來的泥土和石頭放置到哪裏去呢？
+諸|兼詞（代詞＋介詞）|「之於」的合音（代指土石＋介詞「於」）|投諸渤海之尾，隱土之北。|把它們扔到渤海的邊緣、隱土的北面去。
+遂|副詞／連詞|於是、就|遂率子孫|愚公於是率領兒孫們出發。
+荷|動詞|挑、肩負、扛|荷擔者三夫|隊伍中能挑擔子的有三個成年男子。
+叩|動詞|敲擊、鑿|叩石墾壤|他們鑿開石頭，挖掘泥土。
+齔|動詞|兒童換牙（脫去乳齒換恆齒，約七八歲）|鄰人京城氏之孀妻有遺男，始齔。|鄰居京城氏的寡婦有個遺腹子，剛到換牙的年齡（約七、八歲）。
+易|動詞|交換、更替、變換|寒暑易節，始一反焉。|冬夏季節更替（過了一整年），才往返一次。
+反|動詞（通假字）|通「返」，返回、往返|寒暑易節，始一反焉。|冬夏季節更替（過了一整年），才往返一次。
+甚|形容詞／副詞|太、非常、厲害（謂語前置）|甚矣，汝之不惠|你真是太不聰明（太愚蠢）了！
+惠|形容詞（通假字）|通「慧」，聰明、有智慧|甚矣，汝之不惠|你真是太不聰明（太愚蠢）了！
+固|形容詞|頑固、固執|汝心之固，固不可徹|你思想這樣頑固，頑固到冥頑不靈、無法通達的地步。
+徹|動詞／形容詞|通透、通達、開竅|汝心之固，固不可徹|你思想這樣頑固，頑固到冥頑不靈、無法通達的地步。
+不若|動詞短語|比不上、不及|曾不若孀妻、弱子|連寡婦和年幼的小孩尚且比不上。
+匱|動詞／形容詞|竭盡、缺乏|子子孫孫，無窮匱也|子子孫孫世代繁衍，是沒有窮盡和缺乏的。
+亡|動詞（通假字）|通「無」，沒有|河曲 智叟亡以應。|河曲智叟沒有話可以用來回應。
+已|動詞|停止、完畢|操蛇之神聞之，懼其不已也|手拿蛇的山神聽說了這番話，害怕愚公他們不停地挖下去。
+厝|動詞（通假字）|通「措」，放置、安放|命夸娥氏二子負二山，一厝朔東，一厝雍南。|天帝命令夸娥氏的兩個兒子背走兩座山，一座放置在朔方東面，一座放置在雍州南面。
+隴|名詞（通假字）|通「壟」，高地、高大的山岡|冀之南，漢之陰，無隴斷焉|從此冀州的南面、漢水的南岸，再也沒有高山阻隔了。
+</script>
+
+<script type="text/plain" class="dat" data-id="t2" data-num="二" data-title="世說新語（四則）" data-author="劉義慶">
+疾|名詞／動詞|病、疾病（這裏指患病）|荀巨伯遠看友人疾|荀巨伯從遠方前來探望患病的朋友。
+值|動詞／副詞|正趕上、恰逢、遇上|值胡賊攻郡|正好遇上胡人叛賊攻打郡城。
+語|動詞|告訴、對……說（讀 yù / 粵音預）|友人語巨伯曰|朋友對荀巨伯說。
+子|代詞|你、您（對男子的尊稱）|吾今死矣，子可去|我如今快要死了，你可以趕快離開。
+去|動詞|離開、離去|吾今死矣，子可去|我如今快要死了，你可以趕快離開。
+敗|動詞|敗壞、毀棄、損害|敗義以求生|敗壞道義來苟且求生。
+豈|副詞|難道、怎能（表示反詰語氣）|豈荀巨伯所行邪？|這難道是我荀巨伯所會做的事嗎？
+邪|語氣助詞|同「耶」，嗎、呢（表反問或疑問語氣）|豈荀巨伯所行邪？|這難道是我荀巨伯所會做的事嗎？
+既|副詞|已經、……之後|賊既至|胡賊已經來到。
+委|動詞|捨棄、拋棄、丟下|友人有疾，不忍委之|我的朋友患了重病，我不忍心拋下他不管。
+班|動詞|調回、撤回（班軍：撤軍、退兵）|遂班軍而還，一郡並獲全。|胡賊於是調回軍隊撤退回去，整個郡城都因此得以保全。
+全|動詞／形容詞|保全、完整無損|遂班軍而還，一郡並獲全。|胡賊於是調回軍隊撤退回去，整個郡城都因此得以保全。
+異|形容詞／名詞|不同、差別、區別|管揮鋤與瓦石不異|管寧揮動鋤頭，把金子看得跟瓦片石塊沒有區別。
+嘗|副詞|曾經|又嘗同席讀書|兩人又曾經同坐在一張席子上讀書。
+軒冕|名詞（借代）|古時大夫以上官員的車乘（軒）和禮帽（冕），借代達官貴人|有乘軒冕過門者|有乘坐華車、戴着禮帽的達官貴人從門前經過。
+故|名詞|從前、原來（如故：像原來一樣）|寧讀如故|管寧像原來一樣專心讀書。
+廢|動詞|放下、停止|歆廢書出看|華歆卻放下書本，跑出門外湊熱鬧觀看。
+挾|動詞|持、帶着、懷挾|少時挾彈出洛陽道|潘岳年輕時，帶着彈弓走到洛陽街道上。
+莫|代詞／副詞|沒有誰、沒有人（否定性無定代詞）|莫不連手共縈之|遇見他的婦女，沒有誰不手拉着手一起圍住他。
+縈|動詞|圍繞、環繞|莫不連手共縈之|遇見他的婦女，沒有誰不手拉着手一起圍住他。
+效|動詞|模仿、仿效|亦復效岳遊遨|左思（左太沖）也模仿潘岳帶着彈弓出外遊逛。
+遨|動詞|遊玩、閒逛|亦復效岳遊遨|左思（左太沖）也模仿潘岳帶着彈弓出外遊逛。
+嫗|名詞|婦人、老婦人|於是羣嫗齊共亂唾之|於是一群婦人一齊向他亂吐口水。
+唾|動詞|吐唾沫、吐口水|於是羣嫗齊共亂唾之|於是一群婦人一齊向他亂吐口水。
+委頓|形容詞|疲憊不堪、狼狽頹喪|委頓而返|左思最終狼狽不堪地回家去了。
+覺|動詞|睡醒、醒來|王子猷居山陰，夜大雪，眠覺|王子猷住在山陰，一天夜裏下大雪，他一覺醒來。
+皎|形容詞|潔白明亮|四望皎然，因起仿偟|向四周望去，天地一片潔白明亮，於是起身徘徊。
+仿偟|動詞（聯綿詞）|同「彷徨」，徘徊、來回走動|四望皎然，因起仿偟|向四周望去，天地一片潔白明亮，於是起身徘徊。
+即便|副詞|立即、馬上、就|即便夜乘小船就之|便立即連夜乘坐小船前往拜訪戴安道。
+就|動詞|前往、靠近、拜訪|即便夜乘小船就之|便立即連夜乘坐小船前往拜訪戴安道。
+宿|名詞／量詞|夜、一夜（經宿：經過一整夜）|經宿方至，造門不前而返。|經過一整夜才到達，到了戴家門前卻不進去便原路返回。
+造|動詞|到、前往、抵達|經宿方至，造門不前而返。|經過一整夜才到達，到了戴家門前卻不進去便原路返回。
+乘|介詞／動詞|趁着、順應|吾本乘興而行，興盡而返。|我本來是趁着一時興致而前往，興致盡了就返回。
+</script>
+
+<script type="text/plain" class="dat" data-id="t3" data-num="三" data-title="桃花源記" data-author="陶潛">
+業|名詞|職業、生計|武陵人，捕魚為業|有個武陵郡人，以捕魚作為職業。
+緣|介詞／動詞|沿着、順着|緣溪行，忘路之遠近。|他沿着溪水划船前行，忘記了路程的遠近。
+逢|動詞|遇見、遇到|忽逢桃花林|忽然遇到一片桃花林。
+夾岸|名詞／副詞|兩岸、溪流兩旁|夾岸數百步，中無雜樹|溪流兩岸幾百步之內，中間沒有別的雜樹。
+英|名詞|花、花瓣（落英：落花）|芳草鮮美，落英繽紛|芳香的青草鮮豔美麗，飄落的花瓣繁多交雜。
+異|動詞（形容詞意動）|對……感到驚異／奇特（意動用法）|漁人甚異之|漁人對這片景象感到十分驚異。
+窮|動詞|窮盡、走到盡頭（形容詞作動詞）|復前行，欲窮其林。|他又繼續向前划行，想要走到那片桃花林的盡頭。
+髣髴|副詞（聯綿詞）|同「彷彿」，隱約、模模糊糊、若隱若現|山有小口，髣髴若有光|山上有一個小洞口，洞裏隱約好像有微光。
+舍|動詞（通假字）|通「捨」，捨棄、離開|便舍船，從口入|他便捨棄了船，從洞口走進去。
+才|副詞|僅僅、只、方才|初極狹，才通人。|起初洞口極為狹窄，僅僅能容許一個人通過。
+豁|形容詞／副詞|開闊、通達（豁然：開闊明亮的樣子）|復行數十步，豁然開朗|又往前走了幾十步，由狹窄幽暗突然變得開闊明亮起來。
+開朗|形容詞|開闊明亮|復行數十步，豁然開朗|又往前走了幾十步，由狹窄幽暗突然變得開闊明亮起來。
+曠|形容詞|遼闊、寬廣、空曠|土地平曠|這裏的土地平坦而寬廣。
+儼|形容詞|整齊（儼然：整齊有序的樣子）|屋舍儼然|房屋排列得整整齊齊。
+屬|名詞|類、輩（之屬：這一類事物）|有良田、美池、桑、竹之屬|有肥沃的田地、美麗的池塘，以及桑樹、竹子這一類景物。
+阡陌|名詞|田間縱橫交錯的小路（南北曰阡，東西曰陌）|阡陌交通，雞犬相聞|田間小路交錯相通，村落間能互相聽見雞鳴和狗吠的聲音。
+悉|副詞|全部、全、都|男女衣着，悉如外人|那裏男女穿戴的衣服，全都像桃花源以外的世人一樣。
+黃髮|名詞（借代）|借代老人（長壽老人頭髮由白轉黃）|黃髮、垂髫，並怡然自樂。|老人和小孩都高高興興，自得其樂。
+垂髫|名詞（借代）|借代小孩（古時童子未束髮，頭髮下垂）|黃髮、垂髫，並怡然自樂。|老人和小孩都高高興興，自得其樂。
+怡|形容詞|愉快、喜悅、和悅|黃髮、垂髫，並怡然自樂。|老人和小孩都高高興興，自得其樂。
+乃|副詞|竟然、於是、就|見漁人，乃大驚|桃花源裏的人看見了漁人，竟然大吃一驚。
+具|副詞（通假字）|通「俱」，詳盡、全部、一一|問所從來。具答之|村民問漁人從哪裏來，漁人詳盡地回答了他們。
+要|動詞（通假字）|通「邀」，邀請|便要還家|村民便邀請漁人回到自己家裏。
+咸|副詞|全、都、皆|村中聞有此人，咸來問訊|村裏的人聽說有這樣一個人，全都趕來打聽消息。
+具|副詞（通假字）|通「俱」，詳盡、全部|此人一一為具言所聞|漁人把自己在外界所聽聞的事，一一向村民詳盡地說出。
+延|動詞|邀請、延請|餘人各復延至其家|其餘的村民又各自邀請漁人到他們家裏作客。
+辭|動詞|告辭、告別|停數日，辭去|漁人停留了幾天，便向村民告辭離去。
+足|助動詞／形容詞|值得（不足：不值得、不必）|不足為外人道也。|這裏的事情不值得對外面的人說啊。
+扶|介詞／動詞|沿着、順着|得其船，便扶向路，|漁人找到了自己的船，便順着先前來時的道路返回。
+向|名詞／副詞|從前、剛才、先前（向路：來時的舊路）|得其船，便扶向路|漁人找到了自己的船，便順着先前來時的道路返回。
+誌|動詞|做標記、記號（名詞作動詞）|處處誌之|漁人在沿途到處都做好了標記。
+及|動詞|到達、到了|及郡下。詣太守|到了武陵郡城下，去拜見太守。
+詣|動詞|前往、到……去（特指拜訪尊長）|及郡下。詣太守|到了武陵郡城下，去拜見太守。
+遣|動詞|派遣、差遣|太守即遣人隨其往|太守立即派遣人員跟隨漁人前往尋找。
+欣|形容詞|高興、欣喜（欣然：高興的樣子）|聞之，欣然規往|劉子驥聽說了這件事，高高興興地計劃前往探訪。
+問津|動詞短語（借代）|詢問渡口，引申為探訪、問路或探索|尋病終，後遂無問津者。|不久他便病逝了，此後就再也沒有探訪桃花源的人了。
+</script>
+
+<script type="text/plain" class="dat" data-id="t4" data-num="四" data-title="歸園田居（少無適俗韻）" data-author="陶潛">
+適|動詞|適應、迎合、順應|少無適俗韻|我年輕時就沒有迎合世俗的氣質與本性。
+俗韻|名詞短語|世俗的氣質、情調或性格|少無適俗韻|我年輕時就沒有迎合世俗的氣質與本性。
+塵網|名詞（借喻）|世俗的羅網（比喻污濁、束縛人性的官場）|誤落塵網中|卻錯誤地掉進世俗官場的羅網之中。
+羈|動詞／形容詞|拘束、束縛（羈鳥：被關在籠裏的鳥）|羈鳥戀舊林|被束縛在籠中的鳥兒眷戀着昔日棲息的樹林。
+拙|名詞／形容詞|愚拙、質樸本性（守拙：堅守純樸愚拙的本性）|守拙歸園田|我堅守純樸愚拙的本性，回到田園生活。
+羅|動詞|排列、羅列、分佈|桃李羅堂前|桃樹和李樹整齊地羅列在廳堂前面。
+曖曖|形容詞（疊字）|昏暗不明、隱約迷茫的樣子|曖曖遠人村|遠處有人居住的村落依稀隱約可見。
+墟|名詞|村落、村莊（墟里：村落）|依依墟里烟|村落裏的炊煙輕柔緩慢地梟梟升起。
+巔|名詞|頂端、樹頂（同「顛」）|雞鳴桑樹巔|公雞在桑樹的頂端啼叫。
+樊籠|名詞（借喻）|關鳥獸的籠子（比喻束縛自由的官場生活）|久在樊籠裏|長久以來被困在官場這座牢籠裏。
+</script>
+
+<script type="text/plain" class="dat" data-id="t5" data-num="五" data-title="湖心亭看雪" data-author="張岱">
+余|代詞|我（第一人稱代詞）|崇禎五年十二月，余住西湖|崇禎五年十二月，我住在西湖邊。
+俱|副詞|全、都、皆|湖中人鳥聲俱絕|西湖裏行人和飛鳥的聲音全都消失了。
+絕|動詞|消失、斷絕|湖中人鳥聲俱絕|西湖裏行人和飛鳥的聲音全都消失了。
+是|代詞|這、此（指示代詞，是日：這一天）|是日更定矣|這一天晚上初更時分（約晚上八時左右）。
+更|名詞|古代夜間計時單位（一夜分五更，更定指初更）|是日更定矣|這一天晚上初更時分（約晚上八時左右）。
+拏|動詞|同「挐」（或通「橈」），撐（船）、划（船）|余拏一小舟|我乘着（撐着）一葉小舟。
+擁|動詞|圍裹、穿着、披着|擁毳衣爐火|身上穿着細毛皮衣，帶着取暖的火爐。
+毳衣|名詞|鳥獸細毛製成的皮衣（保暖的裘衣）|擁毳衣爐火|身上穿着細毛皮衣，帶着取暖的火爐。
+霧凇|名詞|寒冷天空中水氣凝結成的冰花|霧凇沆碭|湖面上冰花與白氣彌漫成一片。
+沆碭|形容詞（聯綿詞）|白氣彌漫廣闊的樣子|霧凇沆碭|湖面上冰花與白氣彌漫成一片。
+芥|名詞|小草（比喻極其微小，名詞作狀語）|與餘舟一芥|以及我那像一棵小草般微小的船兒。
+強|副詞|竭力、勉力、盡力（讀 qiǎng / 粵音搶）|余強飲三大白而別|我勉力喝了三大杯酒，然後才告別離開。
+客|動詞|客居、旅居（名詞活用作動詞）|問其姓氏，是金陵人，客此|問他們的姓氏，原來是金陵人，客居在這裏。
+癡|形容詞|癡迷（對山水雪景的痴迷執着）|莫說相公癡，更有癡似相公者！|不要說相公您太癡迷了，還有像相公您一樣癡迷的人呢！
+</script>
+
+<script type="text/plain" class="dat" data-id="t6" data-num="六" data-title="愛蓮說" data-author="周敦頤">
+可|助動詞|值得（可愛：值得喜愛）|可愛者甚蕃|值得喜愛的花草非常繁多。
+甚|副詞|很、非常、十分|可愛者甚蕃|值得喜愛的花草非常繁多。
+蕃|形容詞|通「繁」，眾多、繁多|可愛者甚蕃|值得喜愛的花草非常繁多。
+獨|副詞|唯獨、只、偏偏|晉陶淵明獨愛菊|晉朝的陶淵明唯獨喜愛菊花。
+淤泥|名詞|河湖池塘底部的污泥|予獨愛蓮之出淤泥而不染|我唯獨喜愛蓮花從污泥中生長出來卻不沾染半點污穢。
+濯|動詞|洗滌、清洗|濯清漣而不妖|經過清澈的水波洗滌卻不顯得妖媚。
+清漣|名詞|清澈的水波（漣：水面吹起的波紋）|濯清漣而不妖|經過清澈的水波洗滌卻不顯得妖媚。
+妖|形容詞|妖豔、妖媚、豔麗嫵媚|濯清漣而不妖|經過清澈的水波洗滌卻不顯得妖媚。
+通|動詞／形容詞|貫通、中空通透|中通外直|蓮梗中間貫通，外部筆直。
+蔓|動詞|滋生藤蔓、蔓延（名詞活用作動詞）|不蔓不枝|既不蔓延藤蔓，也不旁生枝節。
+枝|動詞|長出旁枝、分枝（名詞活用作動詞）|不蔓不枝|既不蔓延藤蔓，也不旁生枝節。
+益|副詞|更加、愈加、越發|香遠益清|香氣傳播得越遠，就越發顯得清幽芬芳。
+亭亭|形容詞／副詞|高聳直立的樣子|亭亭淨植|高高地、潔淨地直立在水面上。
+淨|形容詞／副詞|潔淨、純潔地|亭亭淨植|高高地、潔淨地直立在水面上。
+植|動詞|豎立、挺立、聳立|亭亭淨植|高高地、潔淨地直立在水面上。
+褻|動詞／副詞|親近而不莊重、輕慢（褻玩：輕慢地把玩）|可遠觀而不可褻玩焉|只可以遠遠地觀賞，卻不可以輕慢地走近把玩啊。
+噫|嘆詞|唉（表示感歎的語氣詞）|噫！菊之愛，陶後鮮有聞|唉！對於菊花的喜愛，自陶淵明以後就很少聽到了。
+鮮|副詞／形容詞|少、罕有（讀 xiǎn / 粵音冼）|噫！菊之愛，陶後鮮有聞|唉！對於菊花的喜愛，自陶淵明以後就很少聽到了。
+宜|副詞／助動詞|應當、當然|牡丹之愛，宜乎眾矣！|對於牡丹的喜愛，當然就有很多人了！
+</script>
+
+<script type="text/plain" class="dat" data-id="t7" data-num="七" data-title="陋室銘" data-author="劉禹錫">
+名|動詞|出名、著名、聞名（名詞活用作動詞）|山不在高，有仙則名|山不在於高，只要有仙人居住便會聞名於世。
+靈|動詞／形容詞|有靈氣、靈異（名詞／形容詞活用作動詞）|水不在深，有龍則靈|水不在於深，只要有蛟龍潛藏便會有靈氣。
+斯|代詞|這、此（指示代詞）|斯是陋室， 唯吾德馨。|這雖然是一間簡陋的屋子，只因我的品德高尚而芬芳遠播。
+唯|連詞／副詞|只、只是、只因為|斯是陋室， 唯吾德馨。|這雖然是一間簡陋的屋子，只因我的品德高尚而芬芳遠播。
+德馨|名詞＋形容詞|品德高尚（馨：散播到遠處的香氣，比喻美德遠播）|斯是陋室， 唯吾德馨。|這雖然是一間簡陋的屋子，只因我的品德高尚而芬芳遠播。
+鴻儒|名詞|學識淵博的學者（鴻：大；儒：學者）|談笑有鴻儒|來這裏談笑風生的都是學識淵博的學者。
+白丁|名詞|沒有官職的平民，文中指缺乏學識修養的俗人|往來無白丁|日常來往的沒有知識淺薄的庸俗之人。
+調|動詞|彈奏、撫弄、調弄|可以調素琴|閒時可以彈奏不加雕飾的古琴。
+絲竹|名詞（借代）|弦樂器與管樂器，借代世俗嘈雜的官場音樂|無絲竹之亂耳|沒有嘈雜的管弦樂聲擾亂聽覺。
+亂耳|動賓短語|使耳朵（聽覺）受到擾亂（亂：使動用法）|無絲竹之亂耳|沒有嘈雜的管弦樂聲擾亂聽覺。
+案牘|名詞|官府的公文、文書|無案牘之勞形|沒有繁雜的官府公文使身體勞累。
+勞|動詞（使動用法）|使……勞累（形容詞使動用法）|無案牘之勞形|沒有繁雜的官府公文使身體勞累。
+形|名詞|形體、身體|無案牘之勞形|沒有繁雜的官府公文使身體勞累。
+</script>
+
+<script type="text/plain" class="dat" data-id="t8" data-num="八" data-title="為學一首示子姪" data-author="彭端淑">
+亦|副詞|也、同樣|為之，則難者亦易矣|只要肯去做，那麼困難的事情也會變得容易了。
+昏|形容詞|愚鈍、天資暗昧不明|吾資之昏不逮人也|我的天資愚鈍，比不上別人。
+不逮|動詞短語|比不上、不及（逮：及、達到）|吾資之昏不逮人也|我的天資愚鈍，比不上別人。
+庸|形容詞|平庸、平凡|吾材之庸不逮人也|我的才幹平庸，比不上別人。
+旦旦|副詞／名詞|天天、每天|旦旦而學之|如果每天都不間斷地學習。
+怠|動詞／形容詞|懈怠、懶惰、鬆懈|久而不怠焉|長久堅持下去而不懈怠。
+迄|動詞／介詞|到、至、直到|迄乎成|直到學業有所成就。
+敏|形容詞|敏捷、聰敏|吾材之敏倍人也|我的才思敏捷超過別人一倍。
+屏棄|動詞|通「摒棄」，捨棄、拋棄不用|屏棄而不用|如果拋棄不用，不去勤奮學習。
+卒|副詞|最終、終於|聖人之道，卒於魯也傳之|孔子的學說道理，最終是由天資愚鈍的曾參傳承下來的。
+魯|形容詞|愚鈍、反應遲鈍（此處亦雙關孔門弟子曾參之字「子輿／參魯」）|聖人之道，卒於魯也傳之|孔子的學說道理，最終是由天資愚鈍的曾參傳承下來的。
+豈|副詞|難道、哪裏（表示反問語氣）|然則昏庸聰敏之用，豈有常哉？|既然如此，那麼愚鈍平庸與聰明敏捷的作用，難道是固定不變的嗎？
+鄙|名詞|邊境、偏遠的地方|蜀之鄙有二僧|四川偏遠的邊境有兩個和尚。
+之|動詞|往、到……去|吾欲之南海，何如？|我想要到南海普陀山去，你覺得怎麼樣？
+恃|動詞|憑藉、依靠、依仗|富者曰：「子何恃而往？」|富和尚說：「你憑藉甚麼前往呢？」
+足|形容詞／動詞|足夠、充足|曰：「吾一瓶一缽足矣。」|窮和尚回答說：「我只要一個水瓶和一個飯缽就足夠了。」
+猶|副詞|尚且、還|吾數年來欲買舟而 下，猶未能也|我好幾年來想要僱船順江而下，尚且還沒有做到呢。
+越|動詞／介詞|到了、過了（越明年：到了第二年）|越明年，貧者自南海還|到了第二年，窮和尚從南海回來了。
+之|結構助詞|用於主謂之間，取消句子獨立性（無實義）|西蜀之去南海，不知幾千里也？|四川距離南海，不知道有幾千里遠。
+去|動詞|距離、相距|西蜀之去南海，不知幾千里也？|四川距離南海，不知道有幾千里遠。
+顧|副詞|反而、難道、卻|人之立志，顧不如蜀鄙之僧哉？|人們立定志向求學，難道反而比不上四川偏遠地方的窮和尚嗎？
+是故|連詞|因此、所以|是故聰與敏，可恃而不可恃也。|因此聰明和敏捷，可以憑藉卻也不可以完全依仗。
+</script>
+
+<script type="text/plain" class="dat" data-id="t9" data-num="九" data-title="習慣說" data-author="劉蓉">
+偏|名詞|旁邊、側邊（西偏：西面旁邊的偏房）|讀書養晦堂之西偏一室|我在養晦堂西面旁邊的一間房間裏讀書。
+俛|動詞|同「俯」，低下頭|俛而讀，仰而思|低下頭來讀書，抬起頭來思考。
+輒|副詞|每每、總是、就|思而弗得， 輒起|思考卻想不通時，就總是站起身來。
+浸淫|動詞／副詞|漸漸擴展、日漸蔓延|室有窪徑尺，浸淫日廣|房間地面有一個直徑一尺的凹坑，日漸擴展而變得愈來愈寬廣。
+履|動詞|踩、踏、踐踏（名詞活用作動詞）|每履之，足苦躓焉。|每次踩到那窪坑，雙腳總是苦於被它絆倒。
+躓|動詞|被絆倒、跌倒|每履之，足苦躓焉。|每次踩到那窪坑，雙腳總是苦於被它絆倒。
+安|動詞|習慣、熟習、安於（形容詞意動用法）|既久而遂安之。|日子久了，也就習慣了那窪坑。
+顧|動詞|看、望着、環視|父來室中，顧而笑曰|父親來到房間裏，看着地上的窪坑笑着說。
+為|語氣助詞（或動詞）|句末語氣助詞，與「何以」配合表反詰，相當於「呢」（一說作動詞，解作「治理」）|一室之不治，何以天下國家為？|連一間屋子都管理不好，還憑甚麼去治理天下國家呢？
+蹴|動詞／形容詞詞素|踩踏、踢，引申為驚奇不安（蹴然：像腳踢着東西般驚奇不安的樣子）|後蓉履其地，蹴然以驚|後來我再踩到那塊填平的地面，竟像腳踢着東西般驚奇不安而吃了一驚。
+已而|時間副詞|不久、過了一會兒|已而復然，又久而後安之。|過了一會兒再踩上去又是這樣，又過了很久之後才習慣了平地。
+復|副詞|又、再、重複|已而復然，又久而後安之。|過了一會兒再踩上去又是這樣，又過了很久之後才習慣了平地。
+中|動詞|影響、深入影響（讀 zhòng / 粵音眾）|習之中人甚矣哉！|習慣對人的影響真是太深太厲害了啊！
+適|動詞／形容詞|適應、相宜、適合|足履平地，不與窪適也|雙腳原本是踩平地的，並不能適應凹陷的窪地。
+即|動詞|接近、走近、回到|至使久而即乎其故|致使日子久了之後再回到原來平坦的地面。
+窒|動詞／形容詞|阻礙、阻塞不通|則反窒焉而不寧|雙腳就反而感到受阻礙而不舒服、不安穩了。
+寧|形容詞|安寧、安穩、舒適|則反窒焉而不寧|雙腳就反而感到受阻礙而不舒服、不安穩了。
+慎|動詞／形容詞|謹慎、慎重、小心（形容詞活用作動詞）|故君子之學貴慎始|所以君子求學，最重視在開始時就謹慎小心。
+</script>
+
+<!-- ===== 選擇題資料（自評測考出題內容） ===== -->
+
+<script type="text/plain" class="qdat" data-id="t1">
+0|「北山愚公者，年且九十」中「且」的意思是：|快要|況且|並且|暫且|A
+1|「懲山北之塞」中「懲」的意思是：|懲罰|苦於|警戒|克制|B
+3|「出入之迂也」中「迂」的意思是：|迂腐|遙遠|繞遠|寬廣|C
+2|「懲山北之塞」中「塞」的意思是：|要塞|填滿|邊疆|阻塞|D
+4|「聚室而謀」中「謀」的意思是：|商量|計謀|謀求|策略|A
+5|「吾與汝畢力平險」中「汝」的意思是：|我們|你們|他們|你的|B
+6|「吾與汝畢力平險」中「畢」的意思是：|完畢|畢竟|竭盡|捕獵|C
+7|「雜然相許」中「雜然」的意思是：|雜亂地|突然地|偶然地|紛紛地|D
+8|「雜然相許」中「許」的意思是：|贊同|允許|也許|大約|A
+9|「曾不能損魁父之丘」中「曾」的意思是：|曾經|尚且|從前|增加|B
+10|「且焉置土石」中「焉」的意思是：|於此|於是|哪裏|語氣助詞|C
+11|「投諸渤海之尾」中「諸」的意思是：|眾多|各位|眾人|之於|D
+12|「遂率子孫」中「遂」的意思是：|於是|終於|完成|稱心|A
+13|「荷擔者三夫」中「荷」的意思是：|荷花|肩扛|承受|推動|B
+14|「叩石墾壤」中「叩」的意思是：|磕頭|詢問|敲鑿|拜訪|C
+15|「鄰人京城氏之孀妻有遺男，始齔」中「齔」的意思是：|成年禮|剛出生|剛會走路|換牙的年齡|D
+16|「寒暑易節」中「易」的意思是：|更替|容易|交易|平易|A
+17|「始一反焉」中「反」的意思是：|反對|返回|反而|翻轉|B
+18|「甚矣，汝之不惠」中「甚」的意思是：|甚麼|嚴重|太過|深厚|C
+19|「甚矣，汝之不惠」中「惠」的意思是：|恩惠|賢惠|給予|聰明|D
+20|「汝心之固，固不可徹」中「固」的意思是：|頑固|本來|堅硬|固然|A
+21|「固不可徹」中「徹」的意思是：|徹夜|開通|徹底|撤回|B
+22|「曾不若孀妻、弱子」中「不若」的意思是：|不同|不順|比不上|不像|C
+23|「子子孫孫，無窮匱也」中「匱」的意思是：|疲倦|貴重|存儲|匱乏|D
+24|「河曲智叟亡以應」中「亡」的意思是：|沒有|死亡|逃亡|失去|A
+25|「懼其不已也」中「已」的意思是：|已經|停止|太過|罷了|B
+26|「一厝朔東」中「厝」的意思是：|錯誤|房屋|安放|停留|C
+27|「無隴斷焉」中「隴」的意思是：|田壟|山谷|甘肅省|高山|D
+</script>
+
+<script type="text/plain" class="qdat" data-id="t2">
+0|「荀巨伯遠看友人疾」中「疾」的意思是：|病痛|快速|痛恨|疾馳|A
+1|「值胡賊攻郡」中「值」的意思是：|價值|恰逢|值得|執守|B
+2|「友人語巨伯曰」中「語」的意思是：|語言|言語|告訴|諺語|C
+3|「吾今死矣，子可去」中「子」的意思是：|兒子|弟子|種子|對男子的尊稱|D
+4|「子可去」中「去」的意思是：|離開|前往|失去|過去|A
+5|「敗義以求生」中「敗」的意思是：|失敗|敗壞|腐爛|擊敗|B
+6|「豈荀巨伯所行邪」中「豈」的意思是：|不但|應該|難道|只要|C
+7|「豈荀巨伯所行邪」中「邪」的意思是：|邪惡|不正|之於|疑問語氣助詞|D
+8|「賊既至」中「既」的意思是：|已經|既然|將要|完畢|A
+9|「不忍委之」中「委」的意思是：|委託|拋棄|推卸|委婉|B
+10|「遂班軍而還」中「班」的意思是：|班級|分發|撤回|排列|C
+11|「一郡並獲全」中「全」的意思是：|全部|都是|齊備|保全|D
+12|「管揮鋤與瓦石不異」中「異」的意思是：|不同|奇怪|另外|驚訝|A
+13|「又嘗同席讀書」中「嘗」的意思是：|常常|曾經|品嚐|嘗試|B
+14|「有乘軒冕過門者」中「軒冕」的意思是：|衣服鞋帽|道士裝束|達官貴人|文人墨客|C
+15|「寧讀如故」中「故」的意思是：|原因|故意|所以|從前|D
+16|「歆廢書出看」中「廢」的意思是：|放下|荒廢|廢除|殘廢|A
+17|「少時挾彈出洛陽道」中「挾」的意思是：|挾持|帶着|夾持|威逼|B
+18|「莫不連手共縈之」中「莫」的意思是：|不要|不能|沒有誰|大約|C
+19|「莫不連手共縈之」中「縈」的意思是：|迷惑|跟隨|擁抱|圍繞|D
+20|「亦復效岳遊遨」中「效」的意思是：|模仿|效果|效力|奉獻|A
+21|「亦復效岳遊遨」中「遨」的意思是：|翱翔|遊玩|傲慢|競逐|B
+22|「於是羣嫗齊共亂唾之」中「嫗」的意思是：|嬰兒|侍女|婦人|女巫|C
+23|「於是羣嫗齊共亂唾之」中「唾」的意思是：|咒罵|睡覺|吹氣|吐口水|D
+24|「委頓而返」中「委頓」的意思是：|疲憊|得意|整潔|匆忙|A
+25|「夜大雪，眠覺」中「覺」的意思是：|感覺|睡醒|覺悟|聽聞|B
+26|「四望皎然」中「皎」的意思是：|昏暗|蒼白|明亮潔白|嬌美|C
+27|「因起仿偟」中「仿偟」的意思是：|感嘆|猶豫不決|慌張|來回走動|D
+28|「即便夜乘小船就之」中「即便」的意思是：|立即|即使|便利|隨意|A
+29|「即便夜乘小船就之」中「就」的意思是：|於是|前往|成就|立即|B
+30|「經宿方至」中「宿」的意思是：|住宿|平素|一整夜|星宿|C
+31|「造門不前而返」中「造」的意思是：|製造|創造|培養|到達|D
+32|「吾本乘興而行」中「乘」的意思是：|趁着|乘坐|計算|攀登|A
+</script>
+
+<script type="text/plain" class="qdat" data-id="t3">
+0|「武陵人，捕魚為業」中「業」的意思是：|職業|事業|產業|學業|A
+1|「緣溪行」中「緣」的意思是：|緣分|沿着|邊緣|因為|B
+2|「忽逢桃花林」中「逢」的意思是：|迎接|慶祝|遇見|奉承|C
+3|「夾岸數百步」中「夾岸」的意思是：|河岸|堤岸|崖岸|兩岸|D
+4|「落英繽紛」中「英」的意思是：|花瓣|英雄|精華|英勇|A
+5|「漁人甚異之」中「異」的意思是：|認為普通|感到驚異|批評指責|詳細觀察|B
+6|「欲窮其林」中「窮」的意思是：|貧窮|窮困|走到盡頭|窮究事理|C
+7|「髣髴若有光」中「髣髴」的意思是：|匆忙|突然|相似|隱約|D
+8|「便舍船」中「舍」的意思是：|捨棄|房舍|宿舍|休息|A
+9|「初極狹，才通人」中「才」的意思是：|才能|僅僅|口才|人才|B
+10|「豁然開朗」中「豁」的意思是：|豁免|捨棄|開闊|裂開|C
+11|「豁然開朗」中「開朗」的意思是：|性格樂觀|心胸寬廣|天氣晴朗|開闊明亮|D
+12|「土地平曠」中「曠」的意思是：|寬廣|空缺|荒廢|曠達|A
+13|「屋舍儼然」中「儼」的意思是：|嚴格|整齊|莊重|威嚴|B
+14|「有良田、美池、桑、竹之屬」中「屬」的意思是：|歸屬|下屬|類|屬於|C
+15|「阡陌交通」中「阡陌」的意思是：|鄉村|道路|荒野|田間小路|D
+16|「男女衣着，悉如外人」中「悉」的意思是：|全部|熟悉|知道|共同|A
+17|「黃髮、垂髫」中「黃髮」借代的對象是：|婦女|老人|年輕人|金髮之人|B
+18|「黃髮、垂髫」中「垂髫」借代的對象是：|婦女|老人|小孩|少女|C
+19|「怡然自樂」中「怡」的意思是：|保養|安逸|滋養|愉快|D
+20|「見漁人，乃大驚」中「乃」的意思是：|竟然|這就是|你的|如此|A
+21|「具答之」中「具」的意思是：|工具|詳盡|器具|具備|B
+22|「便要還家」中「要」的意思是：|要求|重要|邀請|必要|C
+23|「咸來問訊」中「咸」的意思是：|鹹味|都城|感動|全都|D
+25|「餘人各復延至其家」中「延」的意思是：|邀請|延長|拖延|延續|A
+26|「停數日，辭去」中「辭」的意思是：|言辭|告別|推辭|辭職|B
+27|「不足為外人道也」中「足」的意思是：|腳|充足|值得|足夠|C
+28|「便扶向路」中「扶」的意思是：|扶持|幫助|攙扶|沿着|D
+29|「便扶向路」中「向」的意思是：|從前|方向|面向|向着|A
+30|「處處誌之」中「誌」的意思是：|志向|做標記|記憶|立志|B
+31|「及郡下」中「及」的意思是：|以及|普及|到了|來得及|C
+32|「詣太守」中「詣」的意思是：|造詣|相逢|詢問|拜訪|D
+33|「太守即遣人隨其往」中「遣」的意思是：|派遣|消遣|遣返|排解|A
+34|「欣然規往」中「欣」的意思是：|欣賞|高興|羨慕|讚美|B
+35|「後遂無問津者」中「問津」的意思是：|乘船離去|隱居山林|探訪|興致遊玩|C
+</script>
+
+<script type="text/plain" class="qdat" data-id="t4">
+0|「少無適俗韻」中「適」的意思是：|舒適|剛才|恰巧|迎合|D
+1|「少無適俗韻」中「俗韻」的意思是：|世俗的氣質|世俗的音韻|流行的歌曲|通俗的詩韻|A
+2|「誤落塵網中」中「塵網」比喻：|塵土飛揚|世俗官場的束縛|俗世的人情|塵世的紅塵|B
+3|「羈鳥戀舊林」中「羈」的意思是：|停留|韁繩|束縛|漂泊|C
+4|「守拙歸園田」中「拙」的意思是：|笨重|謙遜|退讓|質樸本性|D
+5|「桃李羅堂前」中「羅」的意思是：|排列|搜羅|絲綢|網羅|A
+6|「曖曖遠人村」中「曖曖」的意思是：|溫暖|昏暗|親近|寬廣|B
+7|「依依墟里烟」中「墟」的意思是：|廢墟|墳墓|村落|空地|C
+8|「雞鳴桑樹巔」中「巔」的意思是：|根部|底下|低谷|頂端|D
+9|「久在樊籠裏」中「樊籠」比喻：|官場的束縛|鳥獸的巢穴|荒野的樹林|戰場的兇險|A
+</script>
+
+<script type="text/plain" class="qdat" data-id="t5">
+0|「余住西湖」中「余」的意思是：|剩餘|我|多餘|其他人|B
+1|「湖中人鳥聲俱絕」中「俱」的意思是：|單獨|具備|全都|偶爾|C
+2|「湖中人鳥聲俱絕」中「絕」的意思是：|獨特|絕對|極好|消失|D
+3|「是日更定矣」中「是」的意思是：|這|對的|肯定|存在|A
+4|「是日更定矣」中「更」的意思是：|更改|夜間計時單位|更加|更多|B
+5|「余拏一小舟」中「拏」的意思是：|捉拿|阻擋|划(船)|拾取|C
+6|「擁毳衣爐火」中「擁」的意思是：|擁抱|擁有|擁擠|披着|D
+7|「擁毳衣爐火」中「毳衣」的意思是：|細毛皮衣|粗布衣服|綢緞衣服|彩色衣服|A
+8|「霧凇沆碭」中「霧凇」的意思是：|大霧|水氣凝結的冰花|濃煙|山中雲霧|B
+9|「霧凇沆碭」中「沆碭」的意思是：|水勢浩大|山巒起伏|白氣彌漫|湖泊眾多|C
+10|「與餘舟一芥」中「芥」的意思是：|芥末|嫌隙|介意|小草（比喻微小）|D
+11|「余強飲三大白而別」中「強」的意思是：|竭力|強大|強迫|增強|A
+12|「是金陵人，客此」中「客」的意思是：|賓客|客居|款待|經過|B
+13|「莫說相公癡」中「癡」的意思是：|愚笨|瘋狂|癡迷|呆滯|C
+</script>
+
+<script type="text/plain" class="qdat" data-id="t6">
+0|「可愛者甚蕃」中「可」的意思是：|可以|能夠|允許|值得|D
+1|「可愛者甚蕃」中「甚」的意思是：|非常|甚至|什麼|過分|A
+2|「可愛者甚蕃」中「蕃」的意思是：|蕃薯|繁多|藩鎮|繁殖|B
+3|「晉陶淵明獨愛菊」中「獨」的意思是：|獨自|孤獨|唯獨|單獨|C
+4|「予獨愛蓮之出淤泥而不染」中「淤泥」的意思是：|清水|黃土|沙粒|污泥|D
+5|「濯清漣而不妖」中「濯」的意思是：|洗滌|浸泡|流淌|擦拭|A
+6|「濯清漣而不妖」中「清漣」的意思是：|清涼的風|清澈的水波|清晨的露珠|清香的氣味|B
+7|「濯清漣而不妖」中「妖」的意思是：|妖怪|妖術|妖豔|災禍|C
+8|「中通外直」中「通」的意思是：|通曉事理|通達人情|連接|中空貫通|D
+9|「不蔓不枝」中「蔓」的意思是：|長出藤蔓|延長|彎曲|牽掛|A
+10|「不蔓不枝」中「枝」的意思是：|樹枝|長出旁枝|分支|枝節|B
+11|「香遠益清」中「益」的意思是：|利益|幫助|更加|增加|C
+12|「亭亭淨植」中「亭亭」的意思是：|亭台樓閣|停滯不前|猶豫不定|高聳直立|D
+13|「亭亭淨植」中「淨」的意思是：|潔淨|空無|全部|平靜|A
+14|「亭亭淨植」中「植」的意思是：|種植|豎立|植物|栽培|B
+15|「可遠觀而不可褻玩焉」中「褻」的意思是：|莊重|親熱|輕慢|骯髒|C
+16|「噫！菊之愛，陶後鮮有聞」中「噫」是：|疑問的「嗎」|肯定的「啊」|否定的「不」|感歎的「唉」|D
+17|「菊之愛，陶後鮮有聞」中「鮮」的意思是：|少|鮮艷|新鮮|鮮美|A
+18|「牡丹之愛，宜乎眾矣」中「宜」的意思是：|恰巧|應當|便宜|適時|B
+</script>
+
+<script type="text/plain" class="qdat" data-id="t7">
+0|「山不在高，有仙則名」中「名」的意思是：|聞名|名字|名譽|名次|A
+1|「水不在深，有龍則靈」中「靈」的意思是：|靈魂|有靈氣|靈巧|靈驗|B
+2|「斯是陋室」中「斯」的意思是：|於是|竟然|這|斯文|C
+3|「唯吾德馨」中「唯」的意思是：|唯一|應答聲|思考|只因為|D
+4|「唯吾德馨」中「德馨」的意思是：|品德高尚|德行的香氣|道德規範|品德聞名|A
+5|「談笑有鴻儒」中「鴻儒」的意思是：|大雁與儒生|學識淵博的學者|讀書人與平民|鴻飛的文人|B
+6|「往來無白丁」中「白丁」的意思是：|白衣僧人|白頭老翁|缺乏學識的俗人|窮苦的農民|C
+7|「可以調素琴」中「調」的意思是：|調解|調配|調整音律|彈奏|D
+8|「無絲竹之亂耳」中「絲竹」的意思是：|嘈雜的管弦樂|蠶絲與竹子|絲綢與竹器|樂師與樂曲|A
+9|「無絲竹之亂耳」中「亂耳」的意思是：|耳朵雜亂|擾亂聽覺|耳朵聽混了|混亂的話語|B
+10|「無案牘之勞形」中「案牘」的意思是：|書桌文具|案件卷宗|官府公文|書案木牘|C
+11|「無案牘之勞形」中「勞」的意思是：|勞動|疲勞|慰勞|使……勞累|D
+12|「無案牘之勞形」中「形」的意思是：|身體|形狀|外貌|影子|A
+</script>
+
+<script type="text/plain" class="qdat" data-id="t8">
+0|「為之，則難者亦易矣」中「亦」的意思是：|又|也|已經|就|B
+1|「吾資之昏不逮人也」中「昏」的意思是：|昏暗|昏迷|愚鈍|糊塗|C
+2|「吾資之昏不逮人也」中「不逮」的意思是：|不被逮捕|來不及|不等待|比不上|D
+3|「吾材之庸不逮人也」中「庸」的意思是：|平庸|功勞|用途|中庸之道|A
+4|「旦旦而學之」中「旦旦」的意思是：|清晨|天天|旦夕|一旦|B
+5|「久而不怠焉」中「怠」的意思是：|等待|怠慢賓客|懈怠|疲倦|C
+6|「迄乎成」中「迄」的意思是：|開始|快要|現在|到|D
+7|「吾材之敏倍人也」中「敏」的意思是：|聰敏|勤奮|恭敬|行動迅速|A
+8|「屏棄而不用」中「屏棄」的意思是：|屏風遮擋|捨棄|隔絕|迴避|B
+9|「聖人之道，卒於魯也傳之」中「卒」的意思是：|士兵|死亡|最終|突然|C
+10|「聖人之道，卒於魯也傳之」中「魯」的意思是：|魯國|粗魯|魯莽|愚鈍|D
+11|「然則昏庸聰敏之用，豈有常哉？」中「豈」的意思是：|難道|大概|應該|豈止|A
+12|「蜀之鄙有二僧」中「鄙」的意思是：|鄙視|邊境|粗俗|謙稱自己|B
+13|「吾欲之南海」中「之」的意思是：|的|這|到……去|代詞「它」|C
+14|「子何恃而往？」中「恃」的意思是：|侍奉|期待|等待|憑藉|D
+15|「吾一瓶一缽足矣」中「足」的意思是：|足夠|值得|腳|滿足|A
+16|「吾數年來欲買舟而下，猶未能也」中「猶」的意思是：|猶豫|尚且|好像|如同|B
+17|「越明年，貧者自南海還」中「越」的意思是：|越過|超過|到了|越發|C
+18|「西蜀之去南海」中「之」的用法／意思是：|的（領屬關係）|代詞「它」|到……去|用於主謂之間，取消句子獨立性|D
+19|「西蜀之去南海」中「去」的意思是：|距離|離開|前往|除掉|A
+20|「人之立志，顧不如蜀鄙之僧哉？」中「顧」的意思是：|回頭看|反而|看望|照顧|B
+21|「是故聰與敏，可恃而不可恃也」中「是故」的意思是：|這是對的|原來的緣故|因此|事情的經過|C
+</script>
+
+<script type="text/plain" class="qdat" data-id="t9">
+0|「讀書養晦堂之西偏一室」中「偏」的意思是：|偏差|偏愛|偏向|旁邊|D
+1|「俛而讀，仰而思」中「俛」的意思是：|低下頭|勉強|俯視遠方|隱藏身形|A
+2|「思而弗得，輒起」中「輒」的意思是：|突然|就|不停|緩緩|B
+3|「室有窪徑尺，浸淫日廣」中「浸淫」的意思是：|浸泡於水中|荒淫無度|漸漸擴展|淫雨不停|C
+4|「每履之」中「履」的意思是：|鞋子|履行承諾|經歷|踩|D
+5|「足苦躓焉」中「躓」的意思是：|被絆倒|站立不穩|止步不前|疾走|A
+6|「既久而遂安之」中「安」的意思是：|安靜|習慣|安放|平安|B
+7|「父來室中，顧而笑曰」中「顧」的意思是：|回頭|反而|看|照顧|C
+8|「一室之不治，何以天下國家為？」中「為」在句中的用法／意思是：|作為|當作|因為|句末語氣助詞，相當於「呢」|D
+9|「後蓉履其地，蹴然以驚」中「蹴」的意思是：|像腳踢着東西般驚奇不安|踐踏泥土|踢球|皺眉|A
+10|「已而復然」中「已而」的意思是：|已經|不久|然而|以後|B
+11|「已而復然」中「復」的意思是：|恢復原狀|回答|又|複雜|C
+12|「習之中人甚矣哉！」中「中」的意思是：|中間|中選|命中目標|深入影響|D
+13|「足履平地，不與窪適也」中「適」的意思是：|適應|迎合|剛才|舒適|A
+14|「至使久而即乎其故」中「即」的意思是：|立即|回到|即使|就是|B
+15|「則反窒焉而不寧」中「窒」的意思是：|窒息|停留|阻礙|窘迫|C
+16|「則反窒焉而不寧」中「寧」的意思是：|寧靜無聲|寧願|難道|安穩|D
+17|「故君子之學貴慎始」中「慎」的意思是：|謹慎|真的|必定|畏懼|A
+</script>
+<!-- ===== 資料結束 ===== -->
+
+<script>
+(()=>{'use strict';
+const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)];
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const shuffle=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a};
+const hl=(s,w)=>{const e=esc(s),k=esc(w),i=e.indexOf(k);return i<0?e:e.slice(0,i)+'<mark>'+k+'</mark>'+e.slice(i+k.length)};
+
+/* ===== 一、讀取資料 ===== */
+const TEXTS=$$('script.dat').map(el=>{const d=el.dataset;
+  const words=el.textContent.split('\n').map(l=>l.trim()).filter(Boolean).map(l=>l.split('|').map(x=>x.trim()))
+    .filter(p=>p.length>=5&&p[0]&&p[2]&&p[3])
+    .map((p,i)=>({id:d.id+'_'+i,tid:d.id,word:p[0],pos:p[1]||'',mean:p[2],orig:p[3],trans:p[4]||'',dis:(p[5]||'').split('#').map(x=>x.trim()).filter(Boolean),src:p[6]||''}));
+  return{id:d.id,num:d.num||'',title:d.title||'',author:d.author||'',words}}).filter(t=>t.words.length);
+const ALL=TEXTS.flatMap(t=>t.words);
+const byId=Object.fromEntries(ALL.map(w=>[w.id,w]));
+const tById=Object.fromEntries(TEXTS.map(t=>[t.id,t]));
+/* 讀取選擇題資料（自評測考出題內容，取自中二文言文字詞選擇題溫習練習一至三），每行：字卡序號|題幹|A|B|C|D|答案 */
+$$('script.qdat').forEach(el=>{const t=tById[el.dataset.id];if(!t)return;
+  el.textContent.split('\n').map(l=>l.trim()).filter(Boolean).forEach(l=>{const p=l.split('|').map(x=>x.trim());
+    const w=t.words[+p[0]];if(w)w.quiz={stem:p[1],opts:[p[2],p[3],p[4],p[5]],ans:'ABCD'.indexOf(p[6])}})});
+
+/* ===== 二、進度儲存 ===== */
+const KEY='j2_wenyan9_v1';
+let S={mastered:{},wrong:{},hist:[],sound:true,a2hs:false};
+try{Object.assign(S,JSON.parse(localStorage.getItem(KEY)||'{}'))}catch(e){}
+const save=()=>{try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}};
+addEventListener('pagehide',save);
+document.addEventListener('visibilitychange',()=>{paused=document.hidden;if(paused)save()});
+
+/* ===== 三、音效（iOS 需先由用戶點按啟動） ===== */
+let AC=null;
+const ensureAC=()=>{try{AC=AC||new (window.AudioContext||window.webkitAudioContext)();if(AC.state==='suspended')AC.resume()}catch(e){}};
+document.addEventListener('touchend',ensureAC,{once:true,passive:true});
+document.addEventListener('click',ensureAC,{once:true});
+function beep(kind){if(!S.sound)return;ensureAC();if(!AC)return;try{const t=AC.currentTime;
+  const tone=(f,st,d,v=.12)=>{const o=AC.createOscillator(),g=AC.createGain();o.type='sine';o.frequency.value=f;g.gain.setValueAtTime(0,t+st);g.gain.linearRampToValueAtTime(v,t+st+.01);g.gain.exponentialRampToValueAtTime(.001,t+st+d);o.connect(g).connect(AC.destination);o.start(t+st);o.stop(t+st+d+.02)};
+  if(kind==='ok'){tone(660,0,.15);tone(990,.12,.25)}else if(kind==='bad'){tone(220,0,.3,.1);tone(180,.1,.3,.08)}else tone(520,0,.08,.06)}catch(e){}}
+function updSound(){$('#soundBtn').classList.toggle('off',!S.sound)}
+$('#soundBtn').onclick=()=>{S.sound=!S.sound;save();updSound();toast(S.sound?'音效已開啟':'音效已關閉');beep('tap')};
+updSound();
+
+/* ===== 四、通用 UI ===== */
+let toastT;function toast(m){const t=$('#toast');t.textContent=m;t.classList.add('show');clearTimeout(toastT);toastT=setTimeout(()=>t.classList.remove('show'),1800)}
+function confirmBox(msg){return new Promise(res=>{const m=$('#modal');$('#modalMsg').textContent=msg;m.hidden=false;const done=v=>{m.hidden=true;$('#modalYes').onclick=$('#modalNo').onclick=null;res(v)};$('#modalYes').onclick=()=>done(true);$('#modalNo').onclick=()=>done(false)})}
+function show(v){$$('section.view').forEach(s=>s.classList.toggle('active',s.id==='view-'+v));$$('nav button').forEach(b=>b.classList.toggle('active',b.dataset.view===v));window.scrollTo(0,0);
+  if(v==='home')renderMenu();if(v==='wrong')renderWrong();if(v==='stats')renderStats();if(v==='final')renderFinal();$('#wrongBadge').textContent=Object.keys(S.wrong).length}
+$$('nav button').forEach(b=>b.onclick=()=>show(b.dataset.view));
+$('#goFinal').onclick=()=>show('final');$('#goWrong').onclick=()=>show('wrong');$('#goStats').onclick=()=>show('stats');
+$('#backHome').onclick=$('#quizBack').onclick=$('#resultHome').onclick=()=>show('home');
+
+/* ===== 五、主選單 ===== */
+const EARTH='子丑寅卯辰巳午未申酉戌亥';
+function renderMenu(){const g=$('#menuGrid');if(!TEXTS.length){g.innerHTML='<div class="empty">尚未載入字詞資料。</div>';return}
+  g.innerHTML=TEXTS.map((t,ti)=>{const dn=EARTH[ti]||t.num,m=t.words.filter(w=>S.mastered[w.id]).length,wr=t.words.filter(w=>S.wrong[w.id]).length,pc=Math.round(m/t.words.length*100);
+  return`<div class="scroll-card"><div class="vt">${dn}卷</div><div class="body"><h3><span class="num">${dn}</span>${esc(t.title)}</h3><div class="author">${esc(t.author)}</div><div class="pbar"><i style="width:${pc}%"></i></div><div class="meta"><span>${t.words.length} 字詞</span><span>已掌握 ${m}（${pc}%）</span>${wr?`<span class="w">錯題 ${wr}</span>`:''}</div><div class="acts"><button class="ink" data-learn="${t.id}">學習字卡</button><button data-quiz="${t.id}">自我測考</button></div></div></div>`}).join('')}
+document.addEventListener('click',e=>{const b=e.target.closest('[data-learn],[data-quiz],[data-card],[data-i]');if(!b)return;
+  if(b.dataset.learn)openLearn(b.dataset.learn);else if(b.dataset.quiz)openQuizSetup(b.dataset.quiz);
+  else if(b.dataset.card){const w=byId[b.dataset.card];if(w)openLearn(w.tid,'all',null,w.id)}
+  else if(b.dataset.i!==undefined&&b.classList.contains('opt'))answer(+b.dataset.i)});
+
+/* ===== 六、學習字卡 ===== */
+let L={tid:null,list:[],i:0,filter:'all',custom:null};
+function openLearn(tid,filter='all',list=null,focusId=null){L.tid=tid;L.filter=filter;L.custom=list;const t=tById[tid];
+  $('#learnTitle').textContent=t?t.title:'錯題溫習';$('#learnAuthor').textContent=t?t.author:'跨篇章';$('#learnToQuiz').style.display=t?'':'none';
+  applyFilter();if(focusId){const k=L.list.findIndex(w=>w.id===focusId);if(k>=0){L.i=k;renderCard()}}show('learn')}
+function applyFilter(){const base=L.custom||(tById[L.tid]?tById[L.tid].words:[]);
+  L.list=base.filter(w=>L.filter==='all'||(L.filter==='mastered'&&S.mastered[w.id])||(L.filter==='unmastered'&&!S.mastered[w.id])||(L.filter==='wrong'&&S.wrong[w.id]));
+  L.i=0;$$('#filterChips .chip').forEach(c=>c.classList.toggle('active',c.dataset.f===L.filter));renderCard()}
+function renderCard(){const w=L.list[L.i],wrap=$('#cardWrap');
+  if(!w){wrap.innerHTML='<div class="empty">此範圍沒有字詞。</div>';$('#counter').textContent='0 / 0';return}
+  const t=tById[w.tid]||{title:'',author:''},srcTxt=esc(t.title)+(w.src?' ‧ '+esc(w.src):'');
+  wrap.innerHTML=`<div class="card${S.mastered[w.id]?' mastered':''}" id="card"><div class="card-inner">
+   <div class="face front"><div class="tag">${srcTxt}</div><div class="sentence"><div class="text">${hl(w.orig,w.word)}</div><div class="src">${esc(t.author)}</div><div class="ask">句中「<mark>${esc(w.word)}</mark>」是甚麼意思？</div></div><div class="hint">點一下翻轉</div><div class="mastered-stamp">已掌握</div></div>
+   <div class="face back"><div class="tag">字解</div><div class="scroll"><div class="defmain"><div class="bigw">${esc(w.word)}</div><div><div class="meaning">${esc(w.mean)}</div><span class="pos">${esc(w.pos)}</span></div></div>
+   <div class="block"><h4>原文</h4><div class="orig">${hl(w.orig,w.word)}<span class="src">${srcTxt}</span></div></div><div class="block"><h4>句解</h4><div class="tr">${esc(w.trans)}</div></div></div></div></div></div>`;
+  $('#counter').textContent=`${L.i+1} / ${L.list.length}`;$('#masterBtn').textContent=S.mastered[w.id]?'✘ 取消已掌握':'✔ 標記已掌握'}
+const flip=()=>{const c=$('#card');if(c){c.classList.toggle('flipped');beep('tap')}};
+const move=d=>{if(!L.list.length)return;L.i=(L.i+d+L.list.length)%L.list.length;renderCard()};
+$('#flipBtn').onclick=flip;$('#prevBtn').onclick=()=>move(-1);$('#nextBtn').onclick=()=>move(1);
+$('#shuffleBtn').onclick=()=>{L.list=shuffle(L.list);L.i=0;renderCard();toast('已洗牌')};
+$('#masterBtn').onclick=()=>{const w=L.list[L.i];if(!w)return;if(S.mastered[w.id])delete S.mastered[w.id];else{S.mastered[w.id]=1;beep('ok')}save();renderCard();$('#wrongBadge').textContent=Object.keys(S.wrong).length};
+$('#filterChips').onclick=e=>{const c=e.target.closest('.chip');if(c){L.filter=c.dataset.f;applyFilter()}};
+$('#learnToQuiz').onclick=()=>{if(L.tid)openQuizSetup(L.tid)};
+/* 點一下翻轉；左右滑動切換（忽略螢幕邊緣起手，避免與 Safari 返回手勢衝突） */
+let tx=0,ty=0,swiped=false,edge=false;
+const cw=$('#cardWrap');
+cw.addEventListener('touchstart',e=>{const p=e.touches[0];tx=p.clientX;ty=p.clientY;swiped=false;edge=tx<24||tx>innerWidth-24},{passive:true});
+cw.addEventListener('touchend',e=>{if(edge)return;const p=e.changedTouches[0],dx=p.clientX-tx,dy=p.clientY-ty;if(Math.abs(dx)>50&&Math.abs(dy)<60){swiped=true;move(dx<0?1:-1)}},{passive:true});
+cw.addEventListener('click',e=>{if(swiped){swiped=false;return}if(e.target.closest('.card'))flip()});
+/* 鍵盤 */
+document.addEventListener('keydown',e=>{if(e.target.tagName==='INPUT')return;
+  if($('#view-learn').classList.contains('active')){if(e.key==='ArrowLeft')move(-1);else if(e.key==='ArrowRight')move(1);else if(e.key===' '||e.key==='Enter'){e.preventDefault();flip()}else if(e.key==='m'||e.key==='M')$('#masterBtn').click()}
+  else if($('#quizPlay').style.display!=='none'&&$('#view-quiz').classList.contains('active')){const k=['1','2','3','4'].indexOf(e.key),kl='ABCD'.indexOf(e.key.toUpperCase());const ki=k>=0?k:kl;if(ki>=0&&!Q.answered)answer(ki);else if(e.key==='Enter'&&Q.answered)$('#nextQ').click()}});
+
+/* ===== 七、測驗（題目、選項及答案取自《中二文言文字詞選擇題溫習練習》一至三） ===== */
+const ansOf=w=>w.quiz.opts[w.quiz.ans];
+let Q={items:[],i:0,score:0,wrong:[],mode:'text',tid:null,label:'',answered:false};
+const rv=n=>(document.querySelector(`input[name=${n}]:checked`)||{}).value;
+function openQuizSetup(tid){Q.tid=tid;const t=tById[tid];$('#quizSub').textContent=t.title+' ‧ '+t.author;$('#quizSetup').style.display='';$('#quizPlay').style.display='none';$('#quizResult').style.display='none';show('quiz')}
+$('#setupToLearn').onclick=()=>openLearn(Q.tid);
+$('#startQuiz').onclick=()=>{const t=tById[Q.tid];if(!t)return;const sc=rv('scope'),n=rv('qn');
+  let ws=t.words.filter(w=>w.quiz&&(sc==='all'||(sc==='unmastered'&&!S.mastered[w.id])||(sc==='wrong'&&S.wrong[w.id])));
+  ws=shuffle(ws);if(n!=='all')ws=ws.slice(0,+n);startQuiz(ws,'text',t.title,Q.tid,+rv('qtimer'))};
+/* 計時器 */
+let qTimerInt=null,qEnd=0;
+function stopTimer(){if(qTimerInt){clearInterval(qTimerInt);qTimerInt=null}}
+function startTimer(sec){stopTimer();const el=$('#qTimer');if(!sec){el.style.display='none';return}
+  el.style.display='';qEnd=Date.now()+sec*1000;
+  const tick=()=>{const ms=qEnd-Date.now();if(ms<=0){el.textContent='時間到';stopTimer();timeUp();return}
+    const s=Math.ceil(ms/1000);el.textContent=`⏱ ${Math.floor(s/60)}:${String(s%60).padStart(2,'0')}`;el.classList.toggle('low',s<=10)};
+  tick();qTimerInt=setInterval(tick,250)}
+function timeUp(){if(!$('#view-quiz').classList.contains('active')||$('#quizPlay').style.display==='none')return;
+  for(let k=0;k<Q.items.length;k++){const it=Q.items[k];if(it.ok===null){it.ok=false;Q.wrong.push({w:it.w,you:'（未作答）'})}}
+  toast('時間到！');beep('bad');finishQuiz()}
+function startQuiz(words,mode,label,tid,timer){words=words.filter(w=>w.quiz);if(!words.length){toast('此範圍沒有字詞');return}
+  Q={items:words.map(w=>({w,opts:shuffle(w.quiz.opts),ok:null})),i:0,score:0,wrong:[],mode,label,tid:tid||null,answered:false,timer:timer||0};
+  $('#quizTitle').textContent=mode==='final'?'試前總測':mode==='wrong'?'錯題測考':'自我測考';if(mode!=='text')$('#quizSub').textContent=label;
+  $('#quizSetup').style.display='none';$('#quizResult').style.display='none';$('#quizPlay').style.display='';show('quiz');renderQ();startTimer(Q.timer)}
+function renderQ(){const it=Q.items[Q.i],w=it.w,t=tById[w.tid]||{title:''};Q.answered=false;
+  $('#qIndex').textContent=`第 ${Q.i+1} / ${Q.items.length} 題`;$('#qScore').textContent=`答對 ${Q.score}`;$('#qBar').style.width=(Q.i/Q.items.length*100)+'%';
+  $('#qType').textContent=t.title+(w.src?' ‧ '+w.src:'');$('#qStem').innerHTML=hl(w.orig,w.word);$('#qSrc').textContent=`句中「${w.word}」的意思是？`;
+  $('#qOptions').innerHTML=it.opts.map((o,i)=>`<button class="opt" data-i="${i}"><span class="n">${'ABCD'[i]}</span><span>${esc(o)}</span></button>`).join('');
+  const fb=$('#qFeedback');fb.className='feedback';fb.innerHTML='';$('#nextQ').style.display='none';$('#nextQ').textContent=Q.i===Q.items.length-1?'查看結果':'下一題 ▶'}
+function answer(i){if(Q.answered)return;Q.answered=true;const it=Q.items[Q.i],w=it.w,ok=it.opts[i]===ansOf(w);it.ok=ok;
+  $$('#qOptions .opt').forEach((b,j)=>{b.disabled=true;if(it.opts[j]===ansOf(w))b.classList.add('correct');else if(j===i)b.classList.add('wrong')});
+  if(ok){Q.score++;beep('ok');splash()}else{Q.wrong.push({w,you:it.opts[i]});S.wrong[w.id]=(S.wrong[w.id]||0)+1;save();beep('bad')}
+  const fb=$('#qFeedback');fb.className='feedback show '+(ok?'good':'badf');
+  fb.innerHTML=`<div class="stamp${ok?'':' bad'}">${ok?'對':'錯'}</div><div class="head">${ok?'答對了！':'答錯了'}</div><div>「<span class="big">${esc(w.word)}</span>」在此解作 <span class="big">${esc(w.mean)}</span>（${esc(w.pos)}）</div><div style="color:var(--ink2)">句解：${esc(w.trans)}</div>`;
+  $('#qScore').textContent=`答對 ${Q.score}`;$('#nextQ').style.display='';$('#wrongBadge').textContent=Object.keys(S.wrong).length}
+$('#nextQ').onclick=()=>{if(Q.i<Q.items.length-1){Q.i++;renderQ();const p=$('#quizPlay');if(p.getBoundingClientRect().top<0)p.scrollIntoView({block:'start'})}else finishQuiz()};
+$('#quitQuiz').onclick=async()=>{if(await confirmBox('確定結束本次測驗？已答題目不會計入紀錄。')){stopTimer();show('home')}};
+function finishQuiz(){stopTimer();$('#quizPlay').style.display='none';$('#quizResult').style.display='';const n=Q.items.length,pc=Math.round(Q.score/n*100);
+  $('#ring').style.background=`conic-gradient(var(--ink) ${pc}%,var(--paper3) 0)`;$('#ringText').innerHTML=`${pc}%<small>${Q.score} / ${n}</small>`;
+  $('#resultMsg').textContent=pc===100?'全部答對，字字珠璣！':pc>=80?'表現優異，再接再厲。':pc>=60?'尚算穩妥，請檢討錯題。':'多溫習字卡，再測一次。';
+  S.hist.unshift({d:Date.now(),label:Q.label,n,c:Q.score});S.hist=S.hist.slice(0,40);save();
+  $('#retestWrong').disabled=!Q.wrong.length;$('#reviewWrongCards').disabled=!Q.wrong.length;
+  $('#wrongTitle').textContent=Q.wrong.length?'答錯題目檢討':'沒有答錯的題目';
+  $('#wrongList').innerHTML=Q.wrong.map(x=>{const w=x.w,t=tById[w.tid]||{title:''};return`<div class="wrong-item"><div class="q">${hl(w.orig,w.word)}</div><div class="ans"><span class="you">${esc(x.you)}</span><span class="ok">${esc(ansOf(w))}</span></div><div class="meta">${esc(t.title)}${w.src?' ‧ '+esc(w.src):''} ‧ ${esc(w.pos)}</div><div style="margin-top:6px"><button class="tbtn" data-card="${w.id}">看字卡</button></div></div>`}).join('');
+  const bw=$('#breakdownWrap');if(Q.mode==='final'){bw.style.display='';const g={};Q.items.forEach(it=>{const k=it.w.tid;g[k]=g[k]||{n:0,c:0};g[k].n++;if(it.ok)g[k].c++});
+    $('#breakdownBody').innerHTML=TEXTS.filter(t=>g[t.id]).map(t=>{const r=g[t.id],p=Math.round(r.c/r.n*100);return`<tr><td>${esc(t.title)}</td><td>${r.n}</td><td>${r.c}</td><td class="pct"><b>${p}%</b></td><td><button class="tbtn" data-learn="${t.id}">溫習此篇</button></td></tr>`}).join('')}else bw.style.display='none';
+  if(pc>=80)splash(true)}
+$('#retestWrong').onclick=()=>startQuiz(Q.wrong.map(x=>x.w),Q.mode,Q.label+'（重測錯題）',Q.tid,Q.timer);
+$('#reviewWrongCards').onclick=()=>openLearn(null,'all',Q.wrong.map(x=>x.w));
+$('#againQuiz').onclick=()=>{if(Q.mode==='final')show('final');else if(Q.mode==='wrong')show('wrong');else openQuizSetup(Q.tid)};
+
+/* ===== 八、試前總測 ===== */
+function finalWords(){const sc=rv('fscope'),n=rv('fqn'),order=rv('forder');let out=[];
+  for(const t of TEXTS){let ws=t.words.filter(w=>w.quiz&&(sc==='all'||(sc==='unmastered'&&!S.mastered[w.id])||(sc==='wrong'&&S.wrong[w.id])));ws=shuffle(ws);if(n!=='all')ws=ws.slice(0,+n);out.push(...ws)}
+  return order==='mix'?shuffle(out):out}
+function renderFinal(){const m=Object.keys(S.mastered).filter(id=>byId[id]).length,wr=Object.keys(S.wrong).filter(id=>byId[id]).length;
+  $('#finalStats').innerHTML=`<div class="stat"><b>${TEXTS.length}</b><span>篇章</span></div><div class="stat"><b>${ALL.length}</b><span>字詞總數</span></div><div class="stat"><b>${m}</b><span>已掌握</span></div><div class="stat"><b class="red">${wr}</b><span>錯題</span></div>`;updFinalCount()}
+function updFinalCount(){$('#finalCount').textContent='本次共 '+finalWords().length+' 題'}
+$$('#view-final input').forEach(i=>i.onchange=updFinalCount);
+$('#startFinal').onclick=()=>startQuiz(finalWords(),'final','試前總測',null,+rv('ftimer'));
+
+/* ===== 九、錯題本 ===== */
+const wrongWords=()=>ALL.filter(w=>S.wrong[w.id]);
+function renderWrong(){const ws=wrongWords(),g=$('#wrongGroups');$('#quizWrongAll').disabled=$('#learnWrongBtn').disabled=!ws.length;
+  if(!ws.length){g.innerHTML='<div class="empty">錯題本是空的。<br>測驗答錯的字詞會自動記錄在這裏。</div>';return}
+  g.innerHTML=TEXTS.map(t=>{const list=ws.filter(w=>w.tid===t.id);if(!list.length)return'';return`<div class="grp"><h3>${esc(t.title)}<small style="color:var(--ink3)">${list.length} 字</small></h3><div class="grid">${list.map(w=>`<div class="mini${S.mastered[w.id]?' m':''}" data-card="${w.id}"><span class="cnt">${S.mastered[w.id]?'已掌握':'錯 '+S.wrong[w.id]+' 次'}</span><div class="s">${hl(w.orig,w.word)}</div><div class="w">${esc(w.word)}：${esc(w.mean)}</div></div>`).join('')}</div></div>`}).join('')}
+$('#quizWrongAll').onclick=()=>startQuiz(shuffle(wrongWords()),'wrong','錯題本測考');
+$('#learnWrongBtn').onclick=()=>openLearn(null,'all',wrongWords());
+$('#clearWrong').onclick=async()=>{if(await confirmBox('確定清空錯題本？')){S.wrong={};save();renderWrong();$('#wrongBadge').textContent='0';toast('已清空')}};
+
+/* ===== 十、學習進度 ===== */
+function renderStats(){const m=Object.keys(S.mastered).filter(id=>byId[id]).length,wr=Object.keys(S.wrong).filter(id=>byId[id]).length;
+  $('#statCards').innerHTML=`<div class="stat"><b>${ALL.length}</b><span>字詞總數</span></div><div class="stat"><b>${m}</b><span>已掌握</span></div><div class="stat"><b class="red">${wr}</b><span>錯題</span></div><div class="stat"><b>${S.hist.length}</b><span>測驗次數</span></div>`;
+  $('#textProgress').innerHTML=TEXTS.map(t=>{const mm=t.words.filter(w=>S.mastered[w.id]).length,pc=Math.round(mm/t.words.length*100);return`<div class="trow"><div class="t">${esc(t.title)}<small>${esc(t.author)}</small></div><div class="pbar"><i style="width:${pc}%"></i></div><div class="n">${mm} / ${t.words.length}（${pc}%）</div></div>`}).join('');
+  $('#histBody').innerHTML=S.hist.length?S.hist.map(h=>{const d=new Date(h.d),p=Math.round(h.c/h.n*100);return`<tr><td>${d.getMonth()+1}月${d.getDate()}日 ${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}</td><td>${esc(h.label)}</td><td>${h.n}</td><td>${h.c}</td><td class="pct"><b>${p}%</b></td></tr>`}).join(''):'<tr><td colspan="5" style="color:var(--ink3)">尚無測驗紀錄</td></tr>'}
+$('#resetAll').onclick=async()=>{if(await confirmBox('確定重設所有進度？已掌握標記、錯題本及測驗紀錄都會清除。')){S.mastered={};S.wrong={};S.hist=[];save();renderStats();$('#wrongBadge').textContent='0';toast('已重設')}};
+
+/* ===== 十一、背景水墨（約 20fps，切換 App 時暫停） ===== */
+const bg=$('#bg'),bc=bg.getContext('2d'),fx=$('#fx'),fc=fx.getContext('2d');let blobs=[],last=0,paused=false,parts=[];
+function size(){const r=Math.min(devicePixelRatio||1,2);for(const c of[bg,fx]){c.width=innerWidth*r;c.height=innerHeight*r;c.style.width=innerWidth+'px';c.style.height=innerHeight+'px'}}
+size();addEventListener('resize',size);
+blobs=Array.from({length:7},()=>({x:Math.random(),y:Math.random(),r:.15+Math.random()*.25,dx:(Math.random()-.5)*.0006,dy:(Math.random()-.5)*.0006,a:.04+Math.random()*.05}));
+function loop(ts){requestAnimationFrame(loop);if(paused||ts-last<50)return;last=ts;const W=bg.width,H=bg.height;bc.clearRect(0,0,W,H);
+  for(const b of blobs){b.x+=b.dx;b.y+=b.dy;if(b.x<-.3||b.x>1.3)b.dx*=-1;if(b.y<-.3||b.y>1.3)b.dy*=-1;const g=bc.createRadialGradient(b.x*W,b.y*H,0,b.x*W,b.y*H,b.r*Math.max(W,H));g.addColorStop(0,`rgba(60,50,40,${b.a})`);g.addColorStop(1,'rgba(60,50,40,0)');bc.fillStyle=g;bc.fillRect(0,0,W,H)}
+  fc.clearRect(0,0,fx.width,fx.height);if(parts.length){parts=parts.filter(p=>p.life>0);for(const p of parts){p.x+=p.vx;p.y+=p.vy;p.vy+=.25;p.life-=.04;fc.globalAlpha=Math.max(p.life,0);fc.fillStyle=p.c;fc.beginPath();fc.arc(p.x,p.y,p.r,0,7);fc.fill()}fc.globalAlpha=1}}
+requestAnimationFrame(loop);
+function splash(big){if(matchMedia('(prefers-reduced-motion:reduce)').matches)return;const r=Math.min(devicePixelRatio||1,2),n=big?60:22,cx=fx.width/2,cy=fx.height*(big?.35:.25);
+  for(let i=0;i<n;i++){const a=Math.random()*Math.PI*2,s=(2+Math.random()*6)*r;parts.push({x:cx,y:cy,vx:Math.cos(a)*s,vy:Math.sin(a)*s-3*r,r:(2+Math.random()*4)*r,life:1,c:Math.random()<.3?'#a8322a':'#1f1d1b'})}}
+
+/* ===== 十二、iOS「加入主畫面」提示與圖示 ===== */
+const iOS=/iP(hone|ad|od)/.test(navigator.userAgent)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1);
+const standalone=navigator.standalone||matchMedia('(display-mode:standalone)').matches;
+if(iOS&&!standalone&&!S.a2hs)setTimeout(()=>$('#a2hs').classList.add('show'),3000);
+$('#a2hsClose').onclick=()=>{$('#a2hs').classList.remove('show');S.a2hs=true;save()};
+try{const c=document.createElement('canvas');c.width=c.height=180;const x=c.getContext('2d');x.fillStyle='#efe7d6';x.fillRect(0,0,180,180);x.fillStyle='#a8322a';x.fillRect(30,30,120,120);x.fillStyle='#fff';x.font='bold 64px "PingFang TC","Heiti TC",sans-serif';x.textAlign='center';x.textBaseline='middle';x.fillText('文',90,94);
+  const l=document.createElement('link');l.rel='apple-touch-icon';l.href=c.toDataURL('image/png');document.head.appendChild(l)}catch(e){}
+/* 禁止雙擊縮放 */
+let lastTap=0;document.addEventListener('touchend',e=>{const now=Date.now();if(now-lastTap<300&&!e.target.closest('.back .scroll'))e.preventDefault();lastTap=now},{passive:false});
+
+renderMenu();
+})();
+</script>
+</body>
+</html>
